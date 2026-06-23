@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>基北區高中落點分析 V21</title>
+  <title>基北區高中落點分析 V22</title>
   <style>
     * { box-sizing: border-box; }
     body {
@@ -14,14 +14,14 @@
       line-height: 1.6;
     }
     header {
-      background: linear-gradient(135deg, #0f172a, #1e3a8a);
+      background: linear-gradient(135deg, #111827, #1d4ed8);
       color: white;
-      padding: 28px 18px;
+      padding: 30px 18px;
       text-align: center;
     }
     header h1 { margin: 0 0 8px; font-size: 28px; }
     header p { margin: 0; opacity: .92; }
-    main { max-width: 1180px; margin: 0 auto; padding: 18px; }
+    main { max-width: 1200px; margin: 0 auto; padding: 18px; }
     .card {
       background: white;
       border-radius: 14px;
@@ -30,7 +30,6 @@
       box-shadow: 0 4px 14px rgba(15, 23, 42, .08);
     }
     h2 { margin: 0 0 12px; font-size: 22px; }
-    h3 { margin: 12px 0 8px; }
     .grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
@@ -76,6 +75,17 @@
       border: 1px solid #e2e8f0;
     }
     .summary strong { display: block; font-size: 22px; }
+    .section-title {
+      margin: 18px 0 10px;
+      padding: 10px 12px;
+      border-radius: 10px;
+      font-weight: 800;
+      font-size: 18px;
+    }
+    .dream-title { background: #fee2e2; color: #991b1b; }
+    .challenge-title { background: #ffedd5; color: #9a3412; }
+    .steady-title { background: #dcfce7; color: #166534; }
+    .safe-title { background: #dbeafe; color: #1d4ed8; }
     table {
       width: 100%;
       border-collapse: collapse;
@@ -87,17 +97,12 @@
       text-align: left;
       vertical-align: top;
     }
-    th {
-      background: #f1f5f9;
-      position: sticky;
-      top: 0;
-      z-index: 1;
-    }
+    th { background: #f1f5f9; }
     .table-wrap {
       overflow-x: auto;
-      max-height: 620px;
       border: 1px solid #e5e7eb;
       border-radius: 12px;
+      margin-bottom: 12px;
     }
     .pill {
       display: inline-block;
@@ -107,13 +112,14 @@
       font-size: 12px;
       white-space: nowrap;
     }
-    .safe { background: #dcfce7; color: #166534; }
-    .steady { background: #dbeafe; color: #1d4ed8; }
-    .challenge { background: #fef3c7; color: #92400e; }
+    .safe { background: #dbeafe; color: #1d4ed8; }
+    .steady { background: #dcfce7; color: #166534; }
+    .challenge { background: #ffedd5; color: #9a3412; }
     .dream { background: #fee2e2; color: #991b1b; }
     .muted { color: #64748b; font-size: 13px; }
     .rank-good { color: #047857; font-weight: 700; }
     .rank-bad { color: #b91c1c; font-weight: 700; }
+    .small { font-size: 13px; }
     footer { text-align: center; padding: 24px; color: #64748b; font-size: 13px; }
     @media (max-width: 900px) {
       .grid, .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
@@ -127,8 +133,8 @@
 </head>
 <body>
 <header>
-  <h1>基北區高中落點分析 V21</h1>
-  <p>序位優先｜分數輔助｜學校強度校正｜安全 / 穩定 / 挑戰 / 夢幻分類</p>
+  <h1>基北區高中落點分析 V22</h1>
+  <p>區間制 + 志願排序制｜先判斷落點區間，再依學校強度排序</p>
 </header>
 
 <main>
@@ -144,19 +150,18 @@
         <input id="rankInput" type="number" value="14610" />
       </div>
       <div>
-        <label>分析模式</label>
+        <label>分析角度</label>
         <select id="modeInput">
-          <option value="balanced" selected>平衡模式：序位70% / 分數20% / 強度10%</option>
-          <option value="safe">保守模式：序位85% / 分數10% / 強度5%</option>
-          <option value="attack">衝刺模式：序位55% / 分數20% / 強度25%</option>
+          <option value="balanced" selected>平衡：正常選填</option>
+          <option value="safe">保守：偏安全</option>
+          <option value="attack">積極：偏挑戰</option>
         </select>
       </div>
       <div>
-        <label>篩選範圍</label>
+        <label>顯示範圍</label>
         <select id="rangeInput">
-          <option value="3000">嚴格：序位 ±3000</option>
-          <option value="5000" selected>一般：序位 ±5000</option>
-          <option value="8000">放寬：序位 ±8000</option>
+          <option value="6000" selected>常用：序位前後 6000</option>
+          <option value="9000">放寬：序位前後 9000</option>
           <option value="999999">顯示全部</option>
         </select>
       </div>
@@ -166,8 +171,9 @@
       <button class="secondary" onclick="resetDefault()">帶入又丞目前資料</button>
     </div>
     <p class="note">
-      V21 修正重點：不再只用「最接近」排序，而是先依序位與分數判斷可參考學校，再依學校錄取難度由高到低呈現。
-      這樣可避免「永平排在陽明、中正前面」這類違反志願排序直覺的情況。
+      V22 修正：取消容易誤解的「V21 評分」。高中落點改用四區判斷：
+      夢幻、挑戰、穩定、安全。每個區間內再依學校強度排序，所以會維持
+      「中正 > 陽明 > 永平」這種較符合志願選填直覺的排序。
     </p>
   </section>
 
@@ -177,30 +183,13 @@
   </section>
 
   <section class="card">
-    <h2>可參考學校排序</h2>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>#</th>
-            <th>學校</th>
-            <th>區域</th>
-            <th>參考分數</th>
-            <th>參考序位</th>
-            <th>序位差</th>
-            <th>落點判斷</th>
-            <th>V21評分</th>
-            <th>備註</th>
-          </tr>
-        </thead>
-        <tbody id="resultBody"></tbody>
-      </table>
-    </div>
+    <h2>V22 志願排序建議</h2>
+    <div id="groupedResults"></div>
   </section>
 
   <section class="card">
-    <h2>完整學校序位資料庫</h2>
-    <p class="muted">目前先放 V21 內建資料。你貼最新資料後，只要替換 <code>schoolData</code> 陣列即可。</p>
+    <h2>完整學校資料庫</h2>
+    <p class="muted">目前先放 V22 內建資料。你之後貼最新資料，我再幫你替換成正式資料庫。</p>
     <div class="table-wrap">
       <table>
         <thead>
@@ -222,55 +211,105 @@
 </main>
 
 <footer>
-  V21｜資料為推估模型，正式落點仍需以當年度正式錄取結果、名額與志願選填策略校正。
+  V22｜本工具為志願排序輔助模型，正式結果仍需依當年度招生名額、實際填志願人數與錄取公告調整。
 </footer>
 
 <script>
 const schoolData = [
-  { name:"中正高中", area:"北市", score:22.4, rankLow:12200, rankHigh:14200, strength:100, commute:"約 30-60 分", note:"V21 校正：應排在陽明、永平前" },
-  { name:"陽明高中", area:"北市", score:21.8, rankLow:13800, rankHigh:15800, strength:95, commute:"約 30-60 分", note:"又丞核心參考校" },
+  { name:"和平高中", area:"北市", score:23.2, rankLow:9000, rankHigh:11200, strength:106, commute:"約 25-50 分", note:"高挑戰參考" },
+  { name:"明倫高中", area:"北市", score:22.8, rankLow:10500, rankHigh:12500, strength:103, commute:"約 40-70 分", note:"偏挑戰" },
+  { name:"中正高中", area:"北市", score:22.4, rankLow:12200, rankHigh:14200, strength:100, commute:"約 30-60 分", note:"V22：挑戰區優先參考" },
+  { name:"陽明高中", area:"北市", score:21.8, rankLow:13800, rankHigh:15800, strength:95, commute:"約 30-60 分", note:"核心參考校" },
   { name:"永平高中", area:"新北", score:21.1, rankLow:14800, rankHigh:17000, strength:88, commute:"約 30-60 分", note:"穩定參考校" },
   { name:"百齡高中", area:"北市", score:20.9, rankLow:15500, rankHigh:17800, strength:86, commute:"約 30-60 分", note:"穩定參考校" },
   { name:"南港高中", area:"北市", score:20.6, rankLow:16500, rankHigh:19000, strength:83, commute:"約 45-75 分", note:"偏穩定" },
+  { name:"大安高工", area:"北市", score:20.3, rankLow:17000, rankHigh:21000, strength:82, commute:"約 30-60 分", note:"技高熱門科需另看" },
   { name:"華江高中", area:"北市", score:20.4, rankLow:17200, rankHigh:19800, strength:81, commute:"約 35-70 分", note:"安全區參考" },
+  { name:"松山工農", area:"北市", score:20.0, rankLow:18000, rankHigh:22000, strength:77, commute:"約 40-75 分", note:"技高/綜高需另看科別" },
   { name:"育成高中", area:"北市", score:20.1, rankLow:18500, rankHigh:21500, strength:78, commute:"約 45-80 分", note:"安全區參考" },
   { name:"復興高中", area:"北市", score:19.9, rankLow:19500, rankHigh:22500, strength:76, commute:"約 45-80 分", note:"安全區參考" },
-  { name:"松山工農", area:"北市", score:20.0, rankLow:18000, rankHigh:22000, strength:77, commute:"約 40-75 分", note:"技高/綜高需另看科別" },
-  { name:"大安高工", area:"北市", score:20.3, rankLow:17000, rankHigh:21000, strength:82, commute:"約 30-60 分", note:"技高熱門科需另看" },
-  { name:"明倫高中", area:"北市", score:22.8, rankLow:10500, rankHigh:12500, strength:103, commute:"約 40-70 分", note:"偏夢幻/挑戰" },
-  { name:"和平高中", area:"北市", score:23.2, rankLow:9000, rankHigh:11200, strength:106, commute:"約 25-50 分", note:"夢幻區參考" }
+  { name:"清水高中", area:"新北", score:19.6, rankLow:20500, rankHigh:23800, strength:73, commute:"約 50-85 分", note:"安全備選" },
+  { name:"三民高中", area:"新北", score:19.4, rankLow:21500, rankHigh:25000, strength:71, commute:"約 50-90 分", note:"安全備選" }
 ];
 
 function midRank(s) {
   return Math.round((s.rankLow + s.rankHigh) / 2);
 }
 
-function clamp(n, min, max) {
-  return Math.max(min, Math.min(max, n));
+function getThreshold(mode) {
+  if (mode === "safe") {
+    return { dream: -2500, challenge: -800, steady: 1800 };
+  }
+  if (mode === "attack") {
+    return { dream: -3800, challenge: -1500, steady: 1000 };
+  }
+  return { dream: -3000, challenge: -1000, steady: 1500 };
 }
 
-function getWeights(mode) {
-  if (mode === "safe") return { rank: 0.85, score: 0.10, strength: 0.05 };
-  if (mode === "attack") return { rank: 0.55, score: 0.20, strength: 0.25 };
-  return { rank: 0.70, score: 0.20, strength: 0.10 };
+function classify(s, userScore, userRank, mode) {
+  const diff = midRank(s) - userRank;
+  const scoreDiff = userScore - s.score;
+  const t = getThreshold(mode);
+
+  let level = "safe";
+  if (diff < t.dream || scoreDiff < -2.0) level = "dream";
+  else if (diff < t.challenge || scoreDiff < -0.8) level = "challenge";
+  else if (diff <= t.steady || scoreDiff < 0.7) level = "steady";
+  else level = "safe";
+
+  return { level, diff, scoreDiff };
 }
 
-function levelByRankDiff(diff) {
-  if (diff >= 1800) return { text:"安全", cls:"safe" };
-  if (diff >= -500) return { text:"穩定", cls:"steady" };
-  if (diff >= -2500) return { text:"挑戰", cls:"challenge" };
-  return { text:"夢幻", cls:"dream" };
+function levelMeta(level) {
+  const map = {
+    dream: { title:"夢幻區", desc:"放前面可以衝，但不要當主力志願。", cls:"dream", titleCls:"dream-title", order:1 },
+    challenge: { title:"挑戰區", desc:"有機會，但需要志願策略搭配。", cls:"challenge", titleCls:"challenge-title", order:2 },
+    steady: { title:"穩定區", desc:"最適合作為主力志願。", cls:"steady", titleCls:"steady-title", order:3 },
+    safe: { title:"安全區", desc:"適合作為保底與備援。", cls:"safe", titleCls:"safe-title", order:4 }
+  };
+  return map[level];
 }
 
-function calcV21(s, userScore, userRank, mode) {
-  const m = midRank(s);
-  const diff = m - userRank;
-  const rankScore = clamp(100 - Math.abs(diff) / 45, 0, 100);
-  const scoreScore = clamp(100 - Math.abs(userScore - s.score) * 18, 0, 100);
-  const strengthScore = clamp(s.strength, 0, 110);
-  const w = getWeights(mode);
-  const total = rankScore * w.rank + scoreScore * w.score + strengthScore * w.strength;
-  return { total: Math.round(total * 10) / 10, diff, m };
+function renderTable(rows, startIndex) {
+  if (!rows.length) return '<p class="muted">此區暫無學校。</p>';
+  return `
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>建議序</th>
+            <th>學校</th>
+            <th>區域</th>
+            <th>參考分數</th>
+            <th>參考序位</th>
+            <th>序位差</th>
+            <th>判斷</th>
+            <th>備註</th>
+          </tr>
+        </thead>
+        <tbody>
+          ${rows.map((s, i) => {
+            const meta = levelMeta(s.analysis.level);
+            const diffText = s.analysis.diff >= 0
+              ? `<span class="rank-good">+${s.analysis.diff}</span>`
+              : `<span class="rank-bad">${s.analysis.diff}</span>`;
+            return `
+              <tr>
+                <td><strong>${startIndex + i}</strong></td>
+                <td><strong>${s.name}</strong></td>
+                <td>${s.area}</td>
+                <td>${s.score}</td>
+                <td>${s.rankLow.toLocaleString()} ~ ${s.rankHigh.toLocaleString()}</td>
+                <td>${diffText}</td>
+                <td><span class="pill ${meta.cls}">${meta.title}</span></td>
+                <td>${s.note || ""}<br><span class="muted">${s.commute || ""}</span></td>
+              </tr>
+            `;
+          }).join("")}
+        </tbody>
+      </table>
+    </div>
+  `;
 }
 
 function analyze() {
@@ -280,44 +319,43 @@ function analyze() {
   const range = Number(document.getElementById("rangeInput").value);
 
   const rows = schoolData
-    .map(s => ({ ...s, calc: calcV21(s, userScore, userRank, mode) }))
-    .filter(s => Math.abs(s.calc.diff) <= range || Math.abs(userScore - s.score) <= 2.5)
+    .map(s => ({ ...s, analysis: classify(s, userScore, userRank, mode) }))
+    .filter(s => Math.abs(s.analysis.diff) <= range || Math.abs(userScore - s.score) <= 2.8)
     .sort((a, b) => {
+      const ma = levelMeta(a.analysis.level);
+      const mb = levelMeta(b.analysis.level);
+      if (ma.order !== mb.order) return ma.order - mb.order;
       if (b.strength !== a.strength) return b.strength - a.strength;
-      return a.calc.m - b.calc.m;
+      return a.rankLow - b.rankLow;
     });
 
-  const resultBody = document.getElementById("resultBody");
-  resultBody.innerHTML = rows.map((s, i) => {
-    const lv = levelByRankDiff(s.calc.diff);
-    const diffText = s.calc.diff >= 0
-      ? `<span class="rank-good">+${s.calc.diff}</span>`
-      : `<span class="rank-bad">${s.calc.diff}</span>`;
-    return `
-      <tr>
-        <td>${i + 1}</td>
-        <td><strong>${s.name}</strong></td>
-        <td>${s.area}</td>
-        <td>${s.score}</td>
-        <td>${s.rankLow.toLocaleString()} ~ ${s.rankHigh.toLocaleString()}</td>
-        <td>${diffText}</td>
-        <td><span class="pill ${lv.cls}">${lv.text}</span></td>
-        <td><strong>${s.calc.total}</strong></td>
-        <td>${s.note || ""}<br><span class="muted">${s.commute || ""}</span></td>
-      </tr>`;
-  }).join("");
+  const groups = {
+    dream: rows.filter(s => s.analysis.level === "dream"),
+    challenge: rows.filter(s => s.analysis.level === "challenge"),
+    steady: rows.filter(s => s.analysis.level === "steady"),
+    safe: rows.filter(s => s.analysis.level === "safe")
+  };
 
-  const safeCount = rows.filter(s => levelByRankDiff(s.calc.diff).text === "安全").length;
-  const steadyCount = rows.filter(s => levelByRankDiff(s.calc.diff).text === "穩定").length;
-  const challengeCount = rows.filter(s => levelByRankDiff(s.calc.diff).text === "挑戰").length;
-  const dreamCount = rows.filter(s => levelByRankDiff(s.calc.diff).text === "夢幻").length;
-  const top = rows[0];
+  let html = "";
+  let index = 1;
+  ["dream", "challenge", "steady", "safe"].forEach(level => {
+    const meta = levelMeta(level);
+    html += `<div class="section-title ${meta.titleCls}">${meta.title}｜${meta.desc}</div>`;
+    html += renderTable(groups[level], index);
+    index += groups[level].length;
+  });
+
+  document.getElementById("groupedResults").innerHTML = html;
+
+  const topSteady = groups.steady[0] ? groups.steady[0].name : "暫無";
+  const topChallenge = groups.challenge[0] ? groups.challenge[0].name : "暫無";
+  const topSafe = groups.safe[0] ? groups.safe[0].name : "暫無";
 
   document.getElementById("summary").innerHTML = `
     <div><span class="muted">目前輸入</span><strong>${userScore} 分</strong><span>序位 ${userRank.toLocaleString()}</span></div>
-    <div><span class="muted">最佳參考</span><strong>${top ? top.name : "無"}</strong><span>${top ? "序位差 " + top.calc.diff : ""}</span></div>
-    <div><span class="muted">穩定以上</span><strong>${safeCount + steadyCount} 間</strong><span>安全 ${safeCount}｜穩定 ${steadyCount}</span></div>
-    <div><span class="muted">挑戰/夢幻</span><strong>${challengeCount + dreamCount} 間</strong><span>挑戰 ${challengeCount}｜夢幻 ${dreamCount}</span></div>
+    <div><span class="muted">挑戰首選</span><strong>${topChallenge}</strong><span>可放前段衝刺</span></div>
+    <div><span class="muted">主力志願</span><strong>${topSteady}</strong><span>建議作為核心排序</span></div>
+    <div><span class="muted">安全備援</span><strong>${topSafe}</strong><span>避免志願落空</span></div>
   `;
 }
 
@@ -343,7 +381,7 @@ function resetDefault() {
   document.getElementById("scoreInput").value = "21.6";
   document.getElementById("rankInput").value = "14610";
   document.getElementById("modeInput").value = "balanced";
-  document.getElementById("rangeInput").value = "5000";
+  document.getElementById("rangeInput").value = "6000";
   analyze();
 }
 
