@@ -2,7 +2,7 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>基北區高中序位資料庫 V20.3</title>
+<title>基北區高中序位資料庫 V20.4</title>
 <style>
 body{margin:0;background:#f5f7fb;color:#1f2937;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",Arial,sans-serif}
 .wrap{max-width:1180px;margin:auto;padding:18px 14px 80px}.hero{background:linear-gradient(135deg,#102a53,#1769d6);color:white;border-radius:24px;padding:24px 18px;box-shadow:0 10px 28px #0002}
@@ -19,8 +19,8 @@ h2{font-size:18px;margin:0 0 12px}.summary{display:grid;grid-template-columns:re
 <body>
 <div class="wrap">
 <section class="hero">
-<h1>基北區高中序位資料庫 V20.3</h1>
-<p>修正版：保留完整資料表，最接近學校用「分數差＋序位差＋可信度」排序，搜尋行政區可輸入「文山」或「文山區」。</p>
+<h1>基北區高中序位資料庫 V20.4</h1>
+<p>排序邏輯修正：先用「分數或序位接近」篩選，再依學校序位由前到後排列，符合志願排序直覺。</p>
 </section>
 
 <section class="card">
@@ -29,14 +29,14 @@ h2{font-size:18px;margin:0 0 12px}.summary{display:grid;grid-template-columns:re
 <div><input id="scoreInput" type="number" step="0.1" placeholder="積分，例如 21.6"></div>
 <div><input id="rankInput" type="number" placeholder="序位，例如 14610"></div>
 <div><input id="keyword" placeholder="搜尋學校／行政區"></div>
-<div><select id="rangeFilter"><option value="2000">只看±2000名</option><option value="3000">只看±3000名</option><option value="5000">只看±5000名</option><option value="999999" selected>顯示全部</option></select></div>
+<div><select id="rangeFilter"><option value="strict">嚴格：分數±1.0 或序位±3000</option><option value="normal" selected>一般：分數±1.5 或序位±5000</option><option value="wide">放寬：分數±2.5 或序位±8000</option><option value="all">顯示全部</option></select></div>
 <div><button onclick="render()">更新分析</button></div>
 </div>
-<div class="note" style="margin-top:10px">差距公式：學校序位中位數 - 輸入序位。正數＝你的序位在該校前面；負數＝你的序位在該校後面。完整資料表不會因距離篩選而消失。</div>
+<div class="note" style="margin-top:10px">本版不再用「最接近」排序，而是用「可參考範圍內，由高到低」排序。這樣 21.6 / 14610 會比之前更符合：中正、陽明、永平這種直覺順序。</div>
 </section>
 
 <section id="summaryCard" class="card" style="display:none"><h2>分析摘要</h2><div id="summary" class="summary"></div></section>
-<section class="card"><h2>最接近的學校</h2><div id="nearTable"></div></section>
+<section class="card"><h2>可參考學校排序</h2><div id="nearTable"></div></section>
 <section class="card"><h2>完整學校序位資料庫</h2><div id="mainTable"></div></section>
 <section class="card"><h2>真實考生樣本庫</h2><div id="sampleTable"></div></section>
 <section class="card"><div class="note">目前資料整合自補習班落點截圖、PDF、真實考生序位樣本與前幾版模型資料。部分學校仍屬多來源推估區間，後續可再用正式錄取結果校正。</div></section>
@@ -56,30 +56,43 @@ function statusByRank(d){
   var ad=Math.abs(d);
   if(ad<=500) return '<span class="good">非常接近</span>';
   if(ad<=1000) return '<span class="mid">接近</span>';
-  if(ad<=2000) return '<span class="mid">可參考</span>';
+  if(ad<=3000) return '<span class="mid">可參考</span>';
   return '<span class="warn">距離較遠</span>';
 }
 function composite(row,score,rank){
   var rm=mid(row[6],row[7]), sm=scoreMid(row);
   var rd = isNaN(rank)?null:rm-rank;
   var sd = isNaN(score)?null:score-sm;
-  var rankScore = rd===null ? 50 : Math.max(0,100-Math.abs(rd)/30);
-  var scoreScore = sd===null ? 50 : Math.max(0,100-Math.abs(sd)*45);
   var trust = Number(row[11]||60);
-  var final = Math.round(rankScore*0.55 + scoreScore*0.30 + trust*0.15);
-  return {rm:rm, sm:sm, rd:rd, sd:sd, rankScore:rankScore, scoreScore:scoreScore, trust:trust, final:final, raw:row};
+  var rankScore = rd===null ? 50 : Math.max(0,100-Math.abs(rd)/50);
+  var scoreScore = sd===null ? 50 : Math.max(0,100-Math.abs(sd)*35);
+  var final = Math.round(rankScore*0.45 + scoreScore*0.35 + trust*0.20);
+  return {rm:rm, sm:sm, rd:rd, sd:sd, trust:trust, final:final, raw:row};
+}
+function thresholds(){
+  var v=rangeFilter.value;
+  if(v==='strict') return {score:1.0, rank:3000, all:false};
+  if(v==='wide') return {score:2.5, rank:8000, all:false};
+  if(v==='all') return {score:999, rank:999999, all:true};
+  return {score:1.5, rank:5000, all:false};
 }
 function allRows(){
-  var score=parseFloat(document.getElementById('scoreInput').value);
-  var rank=parseInt(document.getElementById('rankInput').value);
-  var kw=normKw(document.getElementById('keyword').value);
+  var score=parseFloat(scoreInput.value);
+  var rank=parseInt(rankInput.value);
+  var kw=normKw(keyword.value);
   var arr=[];
   for(var i=0;i<schools.length;i++){
-    var s=schools[i];
-    var text=normKw(s.join(' '));
+    var s=schools[i], text=normKw(s.join(' '));
     if(!kw || text.indexOf(kw)>=0) arr.push(composite(s,score,rank));
   }
   return arr;
+}
+function isRelevant(x, t){
+  if(t.all) return true;
+  var hasScore = !(x.sd===null || isNaN(x.sd));
+  var hasRank = !(x.rd===null || isNaN(x.rd));
+  if(!hasScore && !hasRank) return true;
+  return (hasScore && Math.abs(x.sd)<=t.score) || (hasRank && Math.abs(x.rd)<=t.rank);
 }
 function rowHtml(x,i){
   var s=x.raw, rd=x.rd, sd=x.sd;
@@ -110,24 +123,21 @@ function tableHtml(rows, limit){
   return out;
 }
 function render(){
-  var score=parseFloat(scoreInput.value), rank=parseInt(rankInput.value), limit=parseInt(rangeFilter.value);
+  var score=parseFloat(scoreInput.value), rank=parseInt(rankInput.value), t=thresholds();
   var rows=allRows();
-  var nearRows=rows.slice();
-  if(!isNaN(rank) && limit<999999){
-    nearRows=nearRows.filter(function(x){ return x.rd!==null && Math.abs(x.rd)<=limit; });
-  }
-  nearRows.sort(function(a,b){
-    return b.final-a.final || Math.abs(a.rd||999999)-Math.abs(b.rd||999999);
+  var refRows=rows.filter(function(x){ return isRelevant(x,t); });
+  refRows.sort(function(a,b){
+    return a.rm-b.rm || b.final-a.final;
   });
-  document.getElementById('nearTable').innerHTML = tableHtml(nearRows,20);
+  nearTable.innerHTML = tableHtml(refRows,30);
   rows.sort(function(a,b){ return a.raw[0]-b.raw[0]; });
-  document.getElementById('mainTable').innerHTML = tableHtml(rows,0);
+  mainTable.innerHTML = tableHtml(rows,0);
   if(!isNaN(score)||!isNaN(rank)){
     summaryCard.style.display='block';
     summary.innerHTML='<div class="box"><div class="muted">輸入積分</div><div class="big">'+(isNaN(score)?'—':score)+'</div></div>'
     +'<div class="box"><div class="muted">輸入序位</div><div class="big">'+(isNaN(rank)?'—':fmt(rank))+'</div></div>'
-    +'<div class="box"><div class="muted">最接近學校</div><div class="big">'+(nearRows[0]?nearRows[0].raw[1]:'—')+'</div></div>'
-    +'<div class="box"><div class="muted">最高綜合評分</div><div class="big">'+(nearRows[0]?nearRows[0].final:'—')+'</div></div>';
+    +'<div class="box"><div class="muted">最高排序學校</div><div class="big">'+(refRows[0]?refRows[0].raw[1]:'—')+'</div></div>'
+    +'<div class="box"><div class="muted">可參考校數</div><div class="big">'+refRows.length+'</div></div>';
   }
 }
 function renderSamples(){
@@ -137,7 +147,7 @@ function renderSamples(){
     out += '<tr><td class="num">'+s[0]+'</td><td>'+s[1]+'</td><td>'+s[2]+'</td><td class="num">'+s[3]+'</td><td class="num">'+s[4]+'</td></tr>';
   }
   out += '</table>';
-  document.getElementById('sampleTable').innerHTML=out;
+  sampleTable.innerHTML=out;
 }
 render(); renderSamples();
 </script>
