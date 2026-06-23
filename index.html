@@ -2,14 +2,14 @@
 <html lang="zh-Hant">
 <head>
 <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>基北區高中序位資料庫 V20.2</title>
+<title>基北區高中序位資料庫 V20.3</title>
 <style>
 body{margin:0;background:#f5f7fb;color:#1f2937;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",Arial,sans-serif}
 .wrap{max-width:1180px;margin:auto;padding:18px 14px 80px}.hero{background:linear-gradient(135deg,#102a53,#1769d6);color:white;border-radius:24px;padding:24px 18px;box-shadow:0 10px 28px #0002}
 .hero h1{margin:0 0 8px;font-size:26px}.hero p{margin:0;line-height:1.7;font-size:14px}.card{background:white;border:1px solid #e5e7eb;border-radius:18px;padding:16px;margin:14px 0;box-shadow:0 6px 18px #0001}
 .grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}@media(max-width:850px){.grid{grid-template-columns:1fr 1fr}table{font-size:12px}.hide-sm{display:none}}
 input,select,button{box-sizing:border-box;width:100%;padding:12px;border:1px solid #d0d5dd;border-radius:12px;font-size:15px}button{background:#1769d6;color:white;border:0;font-weight:900;cursor:pointer}
-table{width:100%;border-collapse:collapse;font-size:14px}th,td{border-bottom:1px solid #e5e7eb;padding:9px 6px;text-align:left;vertical-align:top}th{background:#f9fafb;color:#475467;font-size:12px;position:sticky;top:0}td.num{text-align:right;font-variant-numeric:tabular-nums}
+table{width:100%;border-collapse:collapse;font-size:14px}th,td{border-bottom:1px solid #e5e7eb;padding:9px 6px;text-align:left;vertical-align:top}th{background:#f9fafb;color:#475467;font-size:12px}td.num{text-align:right;font-variant-numeric:tabular-nums}
 .tag{display:inline-block;background:#eef3fb;color:#0f4ea3;border-radius:999px;padding:2px 8px;font-size:12px;margin:2px}.note{background:#fff7e6;border:1px solid #e7b84b;color:#8a5a00;border-radius:14px;padding:12px;line-height:1.65;font-size:13px}
 .diffp{color:#067647;font-weight:900}.diffn{color:#b42318;font-weight:900}.score{font-weight:900;color:#0f4ea3}.muted{color:#667085;font-size:12px}.good{color:#067647;font-weight:900}.mid{color:#b8860b;font-weight:900}.warn{color:#b42318;font-weight:900}
 h2{font-size:18px;margin:0 0 12px}.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}@media(max-width:850px){.summary{grid-template-columns:1fr 1fr}}
@@ -19,8 +19,8 @@ h2{font-size:18px;margin:0 0 12px}.summary{display:grid;grid-template-columns:re
 <body>
 <div class="wrap">
 <section class="hero">
-<h1>基北區高中序位資料庫 V20.2</h1>
-<p>不做傳統「衝穩保」，改用「分數差＋序位差＋資料可信度」排序。預設只呈現最接近的學校，並保留完整資料表。</p>
+<h1>基北區高中序位資料庫 V20.3</h1>
+<p>修正版：保留完整資料表，最接近學校用「分數差＋序位差＋可信度」排序，搜尋行政區可輸入「文山」或「文山區」。</p>
 </section>
 
 <section class="card">
@@ -29,102 +29,115 @@ h2{font-size:18px;margin:0 0 12px}.summary{display:grid;grid-template-columns:re
 <div><input id="scoreInput" type="number" step="0.1" placeholder="積分，例如 21.6"></div>
 <div><input id="rankInput" type="number" placeholder="序位，例如 14610"></div>
 <div><input id="keyword" placeholder="搜尋學校／行政區"></div>
-<div><select id="rangeFilter"><option value="2000">只看±2000名</option><option value="3000">只看±3000名</option><option value="999999">顯示全部</option></select></div>
+<div><select id="rangeFilter"><option value="2000">只看±2000名</option><option value="3000">只看±3000名</option><option value="5000">只看±5000名</option><option value="999999" selected>顯示全部</option></select></div>
 <div><button onclick="render()">更新分析</button></div>
 </div>
-<div class="note" style="margin-top:10px">
-差距公式：學校序位中位數 - 輸入序位。正數＝你的序位在該校前面；負數＝你的序位在該校後面。綜合評分同時參考分數差、序位差與可信度。
-</div>
+<div class="note" style="margin-top:10px">差距公式：學校序位中位數 - 輸入序位。正數＝你的序位在該校前面；負數＝你的序位在該校後面。完整資料表不會因距離篩選而消失。</div>
 </section>
 
-<section id="summaryCard" class="card" style="display:none">
-<h2>分析摘要</h2>
-<div id="summary" class="summary"></div>
-</section>
-
-<section class="card">
-<h2>最接近的學校</h2>
-<div id="nearTable"></div>
-</section>
-
-<section class="card">
-<h2>完整學校序位資料庫</h2>
-<div id="mainTable"></div>
-</section>
-
-<section class="card">
-<h2>真實考生樣本庫</h2>
-<div id="sampleTable"></div>
-</section>
-
-<section class="card">
-<div class="note">目前資料整合自你提供的補習班落點截圖、PDF、真實考生序位樣本與前幾版模型資料。部分學校仍屬多來源推估區間，後續可再用正式錄取結果校正。</div>
-</section>
+<section id="summaryCard" class="card" style="display:none"><h2>分析摘要</h2><div id="summary" class="summary"></div></section>
+<section class="card"><h2>最接近的學校</h2><div id="nearTable"></div></section>
+<section class="card"><h2>完整學校序位資料庫</h2><div id="mainTable"></div></section>
+<section class="card"><h2>真實考生樣本庫</h2><div id="sampleTable"></div></section>
+<section class="card"><div class="note">目前資料整合自補習班落點截圖、PDF、真實考生序位樣本與前幾版模型資料。部分學校仍屬多來源推估區間，後續可再用正式錄取結果校正。</div></section>
 </div>
 
 <script>
-const schools = [["北一女中", 33.8, 33.8, 710, 1700, "704", "中正", "高中", 70, ["補習班/歷史資料"], ["女校", "數理資優", "語文資優"]], ["建國中學", 34.6, 34.6, 854, 950, "840", "中正", "高中", 80, ["補習班/歷史資料"], ["男校", "科學班", "數理資優"]], ["師大附中", 32.8, 33.6, 910, 2500, "約661", "大安", "高中", 65, ["補習班/歷史資料"], ["科學班", "數理資優", "校風自由"]], ["成功高中", 31.8, 31.8, 1914, 3372, "641", "中正", "高中", 75, ["補習班/歷史資料", "真實樣本"], ["男校", "升學穩定"]], ["中山女高", 30.8, 30.8, 1620, 4270, "709", "中山", "高中", 70, ["補習班/歷史資料"], ["女校", "語文資優"]], ["松山高中", 29.8, 30.6, 1962, 4500, "646", "信義", "高中", 70, ["補習班/歷史資料"], ["交通便利", "升學穩定"]], ["大同高中", 29.8, 29.8, 4700, 5154, "462", "中山", "高中", 75, ["補習班/歷史資料", "樣本區間"], ["市區便利"]], ["政大附中", 28.6, 28.8, 5200, 6155, "163", "文山", "高中", 75, ["補習班/歷史資料"], ["校風自由", "多元發展"]], ["中崙高中", 28.6, 28.8, 5400, 5907, "260", "松山", "高中", 75, ["補習班/歷史資料"], ["交通便利"]], ["板橋高中", 27.8, 28.6, 5900, 6653, "601", "板橋", "高中", 75, ["補習班/歷史資料"], ["新北前段"]], ["成淵高中", 27.6, 27.8, 6700, 7100, "296", "大同", "高中", 70, ["補習班/歷史資料"], ["市區便利"]], ["麗山高中", 26.8, 27.8, 6500, 7410, "230", "內湖", "高中", 75, ["補習班/歷史資料"], ["數理強", "科展特色"]], ["海山高中", 26.6, 26.6, 7800, 8032, "256", "板橋", "高中", 75, ["補習班/歷史資料", "樣本區間"], ["新北熱門"]], ["和平高中", 25.8, 25.8, 7400, 8284, "323", "大安", "高中", 75, ["補習班/歷史資料"], ["通勤優勢", "數理資優"]], ["大直高中", 25.6, 27.8, 7000, 8674, "237", "中山", "高中", 65, ["補習班/歷史資料"], ["環境佳"]], ["明倫高中", 25.4, 25.6, 8600, 9324, "428", "大同", "高中", 75, ["補習班/歷史資料"], ["校風穩定"]], ["西松高中", 24.6, 24.8, 8400, 9708, "265", "松山", "高中", 70, ["補習班/歷史資料"], ["交通便利"]], ["北大高中", 23.6, 24.6, 9000, 9956, "132", "三峽", "高中", 65, ["補習班/歷史資料"], ["環境佳"]], ["內湖高中", 23.6, 23.6, 9500, 10841, "528", "內湖", "高中", 70, ["補習班/歷史資料"], ["科技生活圈"]], ["百齡高中", 22.8, 23.8, 9300, 11352, "200", "士林", "高中", 70, ["補習班/歷史資料"], ["AI學程"]], ["景美女中", 22.8, 23.0, 10000, 11637, "461", "文山", "高中", 75, ["補習班/歷史資料"], ["女校", "通勤極佳", "語文資優"]], ["中正高中", 22.6, 22.6, 10600, 11765, "449", "北投", "高中", 75, ["補習班/歷史資料"], ["校地大", "語文資優"]], ["中和高中", 21.8, 22.6, 11200, 13071, "467", "中和", "高中", 75, ["補習班/歷史資料"], ["生活機能佳"]], ["陽明高中", 21.6, 21.8, 13702, 13806, "342", "士林", "高中", 95, ["宏偉", "林群", "甄戰"], ["AI智慧班", "雙語班", "數理資優"]], ["南湖高中", 21.6, 21.8, 12850, 13702, "443", "內湖", "高中", 80, ["補習班/歷史資料"], ["資訊特色"]], ["新莊高中", 20.6, 21.1, 13100, 14736, "506", "新莊", "高中", 70, ["補習班/歷史資料"], ["新北大型校"]], ["永平高中", 20.6, 20.6, 14100, 14736, "255", "永和", "高中", 75, ["補習班/歷史資料"], ["永和生活圈"]], ["南港高中", 20.6, 21.8, 13600, 15040, "194", "南港", "高中", 75, ["補習班/歷史資料"], ["科技生活圈", "資訊特色"]], ["華江高中", 19.6, 19.8, 14400, 15698, "433", "萬華", "高中", 75, ["補習班/歷史資料"], ["市區便利"]], ["新北高中", 17.8, 17.8, 14800, 15200, "—", "三重", "高中", 60, ["補習班/歷史資料"], ["新北大型校"]], ["丹鳳高中", 18.8, 18.8, 15000, 15400, "—", "新莊", "高中", 60, ["補習班/歷史資料"], ["校風穩定"]], ["永春高中", 18.6, 18.6, 15300, 15700, "—", "信義", "高中", 60, ["補習班/歷史資料"], ["交通便利"]], ["新店高中", 17.8, 17.8, 17000, 17450, "—", "新店", "高中", 55, ["補習班/歷史資料"], ["通勤優勢"]], ["萬芳高中", 17.6, 17.6, 17350, 17800, "—", "文山", "高中", 55, ["補習班/歷史資料"], ["文山近距離"]], ["錦和高中", 16.6, 16.6, 19200, 19600, "—", "中和", "高中", 55, ["補習班/歷史資料"], ["中和生活圈"]]];
-const samples = [["22.6", "男", "國A", "12530～12675", "6894～7009"], ["21.6", "男", "未完整提供", "14610～14735", "7953～8052"], ["21.6", "女", "國B、數B+、英A、社A、自B、作文4", "14484～14609", "6561～6660"], ["20.8", "未提供", "國B++、數B++、英B+、社A、自B++、作文5", "14997～15120", "—"], ["20.6", "男", "國B、數B++、英A++", "15948～16070", "8662～8761"], ["18.8", "女", "國B、數B、英A、社A、自B、作文5", "17616～17745", "8106～8205"]];
+var schools = [[1, "北一女中", "33.8", 33.8, 33.8, "710～1700", 710, 1700, "704", "中正", "高中", 70, ["補習班/歷史資料"], ["女校", "數理資優", "語文資優"]], [2, "建國中學", "34.6", 34.6, 34.6, "854～950", 854, 950, "840", "中正", "高中", 80, ["補習班/歷史資料"], ["男校", "科學班", "數理資優"]], [3, "師大附中", "32.8～33.6", 32.8, 33.6, "910～2500", 910, 2500, "約661", "大安", "高中", 65, ["補習班/歷史資料"], ["科學班", "數理資優", "校風自由"]], [4, "成功高中", "31.8", 31.8, 31.8, "1914～3372", 1914, 3372, "641", "中正", "高中", 75, ["補習班/歷史資料", "真實樣本"], ["男校", "升學穩定"]], [5, "中山女高", "30.8", 30.8, 30.8, "1620～4270", 1620, 4270, "709", "中山", "高中", 70, ["補習班/歷史資料"], ["女校", "語文資優"]], [6, "松山高中", "29.8～30.6", 29.8, 30.6, "1962～4500", 1962, 4500, "646", "信義", "高中", 70, ["補習班/歷史資料"], ["交通便利", "升學穩定"]], [7, "大同高中", "29.8", 29.8, 29.8, "4700～5154", 4700, 5154, "462", "中山", "高中", 75, ["補習班/歷史資料", "樣本區間"], ["市區便利"]], [8, "政大附中", "28.6～28.8", 28.6, 28.8, "5200～6155", 5200, 6155, "163", "文山", "高中", 75, ["補習班/歷史資料"], ["校風自由", "多元發展"]], [9, "中崙高中", "28.6～28.8", 28.6, 28.8, "5400～5907", 5400, 5907, "260", "松山", "高中", 75, ["補習班/歷史資料"], ["交通便利"]], [10, "板橋高中", "27.8～28.6", 27.8, 28.6, "5900～6653", 5900, 6653, "601", "板橋", "高中", 75, ["補習班/歷史資料"], ["新北前段"]], [11, "成淵高中", "27.6～27.8", 27.6, 27.8, "6700～7100", 6700, 7100, "296", "大同", "高中", 70, ["補習班/歷史資料"], ["市區便利"]], [12, "麗山高中", "26.8～27.8", 26.8, 27.8, "6500～7410", 6500, 7410, "230", "內湖", "高中", 75, ["補習班/歷史資料"], ["數理強", "科展特色"]], [13, "海山高中", "26.6", 26.6, 26.6, "7800～8032", 7800, 8032, "256", "板橋", "高中", 75, ["補習班/歷史資料", "樣本區間"], ["新北熱門"]], [14, "和平高中", "25.8", 25.8, 25.8, "7400～8284", 7400, 8284, "323", "大安", "高中", 75, ["補習班/歷史資料"], ["通勤優勢", "數理資優"]], [15, "大直高中", "25.6～27.8", 25.6, 27.8, "7000～8674", 7000, 8674, "237", "中山", "高中", 65, ["補習班/歷史資料"], ["環境佳"]], [16, "明倫高中", "25.4～25.6", 25.4, 25.6, "8600～9324", 8600, 9324, "428", "大同", "高中", 75, ["補習班/歷史資料"], ["校風穩定"]], [17, "西松高中", "24.6～24.8", 24.6, 24.8, "8400～9708", 8400, 9708, "265", "松山", "高中", 70, ["補習班/歷史資料"], ["交通便利"]], [18, "北大高中", "23.6～24.6", 23.6, 24.6, "9000～9956", 9000, 9956, "132", "三峽", "高中", 65, ["補習班/歷史資料"], ["環境佳"]], [19, "內湖高中", "23.6", 23.6, 23.6, "9500～10841", 9500, 10841, "528", "內湖", "高中", 70, ["補習班/歷史資料"], ["科技生活圈"]], [20, "百齡高中", "22.8～23.8", 22.8, 23.8, "9300～11352", 9300, 11352, "200", "士林", "高中", 70, ["補習班/歷史資料"], ["AI學程"]], [21, "景美女中", "22.8～23.0", 22.8, 23.0, "10000～11637", 10000, 11637, "461", "文山", "高中", 75, ["補習班/歷史資料"], ["女校", "通勤極佳", "語文資優"]], [22, "中正高中", "22.6", 22.6, 22.6, "10600～11765", 10600, 11765, "449", "北投", "高中", 75, ["補習班/歷史資料"], ["校地大", "語文資優"]], [23, "中和高中", "21.8～22.6", 21.8, 22.6, "11200～13071", 11200, 13071, "467", "中和", "高中", 75, ["補習班/歷史資料"], ["生活機能佳"]], [24, "陽明高中", "21.6～21.8", 21.6, 21.8, "13702～13806", 13702, 13806, "342", "士林", "高中", 95, ["宏偉", "林群", "甄戰"], ["AI智慧班", "雙語班", "數理資優"]], [25, "南湖高中", "21.6～21.8", 21.6, 21.8, "12850～13702", 12850, 13702, "443", "內湖", "高中", 80, ["補習班/歷史資料"], ["資訊特色"]], [26, "新莊高中", "20.6～21.1", 20.6, 21.1, "13100～14736", 13100, 14736, "506", "新莊", "高中", 70, ["補習班/歷史資料"], ["新北大型校"]], [27, "永平高中", "20.6", 20.6, 20.6, "14100～14736", 14100, 14736, "255", "永和", "高中", 75, ["補習班/歷史資料"], ["永和生活圈"]], [28, "南港高中", "20.6～21.8", 20.6, 21.8, "13600～15040", 13600, 15040, "194", "南港", "高中", 75, ["補習班/歷史資料"], ["科技生活圈", "資訊特色"]], [29, "華江高中", "19.6～19.8", 19.6, 19.8, "14400～15698", 14400, 15698, "433", "萬華", "高中", 75, ["補習班/歷史資料"], ["市區便利"]], [30, "新北高中", "17.8", 17.8, 17.8, "14800～15200", 14800, 15200, "—", "三重", "高中", 60, ["補習班/歷史資料"], ["新北大型校"]], [31, "丹鳳高中", "18.8", 18.8, 18.8, "15000～15400", 15000, 15400, "—", "新莊", "高中", 60, ["補習班/歷史資料"], ["校風穩定"]], [32, "永春高中", "18.6", 18.6, 18.6, "15300～15700", 15300, 15700, "—", "信義", "高中", 60, ["補習班/歷史資料"], ["交通便利"]], [33, "新店高中", "17.8", 17.8, 17.8, "17000～17450", 17000, 17450, "—", "新店", "高中", 55, ["補習班/歷史資料"], ["通勤優勢"]], [34, "萬芳高中", "17.6", 17.6, 17.6, "17350～17800", 17350, 17800, "—", "文山", "高中", 55, ["補習班/歷史資料"], ["文山近距離"]], [35, "錦和高中", "16.6", 16.6, 16.6, "19200～19600", 19200, 19600, "—", "中和", "高中", 55, ["補習班/歷史資料"], ["中和生活圈"]]];
+var samples = [["22.6", "男", "國A", "12530～12675", "6894～7009"], ["21.6", "男", "未完整提供", "14610～14735", "7953～8052"], ["21.6", "女", "國B、數B+、英A、社A、自B、作文4", "14484～14609", "6561～6660"], ["20.8", "未提供", "國B++、數B++、英B+、社A、自B++、作文5", "14997～15120", "—"], ["20.6", "男", "國B、數B++、英A++", "15948～16070", "8662～8761"], ["18.8", "女", "國B、數B、英A、社A、自B、作文5", "17616～17745", "8106～8205"]];
 
-function fmt(n){return n==null?'—':Math.round(n).toLocaleString('zh-TW')}
-function mid(a,b){return Math.round((a+b)/2)}
-function scoreMid(s){return Math.round(((s[2]+s[3])/2)*10)/10}
-function scoreDiffText(d){if(d==null)return '—'; return (d>=0?'+':'')+d.toFixed(1)}
-function statusByRank(d){let ad=Math.abs(d); if(ad<=500)return '<span class="good">非常接近</span>'; if(ad<=1000)return '<span class="mid">接近</span>'; if(ad<=2000)return '<span class="mid">可參考</span>'; return '<span class="warn">距離較遠</span>'}
-function composite(row,score,rank){
-  let rm=mid(row[4],row[5]), sm=scoreMid(row);
-  let rd = isNaN(rank)?null:rm-rank;
-  let sd = isNaN(score)?null:score-sm;
-  let rankScore = rd==null ? 50 : Math.max(0,100-Math.abs(rd)/30); // ±3000約0分
-  let scoreScore = sd==null ? 50 : Math.max(0,100-Math.abs(sd)*45); // ±2.2約0分
-  let trust = row[9]||60;
-  let final = Math.round(rankScore*0.55 + scoreScore*0.30 + trust*0.15);
-  return {rm,sm,rd,sd,rankScore,scoreScore,trust,final};
+function fmt(n){ if(n===null || isNaN(n)) return '—'; return Math.round(n).toLocaleString('zh-TW'); }
+function mid(a,b){ return Math.round((Number(a)+Number(b))/2); }
+function scoreMid(s){ return Math.round(((Number(s[3])+Number(s[4]))/2)*10)/10; }
+function scoreDiffText(d){ if(d===null || isNaN(d)) return '—'; return (d>=0?'+':'')+Number(d).toFixed(1); }
+function normKw(s){ return String(s||'').replace(/區/g,'').trim(); }
+function statusByRank(d){
+  if(d===null || isNaN(d)) return '—';
+  var ad=Math.abs(d);
+  if(ad<=500) return '<span class="good">非常接近</span>';
+  if(ad<=1000) return '<span class="mid">接近</span>';
+  if(ad<=2000) return '<span class="mid">可參考</span>';
+  return '<span class="warn">距離較遠</span>';
 }
-function makeRows(){
-  const score=parseFloat(scoreInput.value), rank=parseInt(rankInput.value), kw=keyword.value.trim(), limit=parseInt(rangeFilter.value);
-  let arr=schools.filter(s => !kw || s.join(' ').includes(kw)).map(s => {
-    let c=composite(s,score,rank);
-    return {...c, raw:s};
-  });
-  if(!isNaN(rank) && limit<999999) arr=arr.filter(x=>Math.abs(x.rd)<=limit);
-  arr.sort((a,b)=>{
-    if(!isNaN(rank)||!isNaN(score)) return b.final-a.final || Math.abs(a.rd??999999)-Math.abs(b.rd??999999);
-    return a.raw[0]-b.raw[0];
-  });
+function composite(row,score,rank){
+  var rm=mid(row[6],row[7]), sm=scoreMid(row);
+  var rd = isNaN(rank)?null:rm-rank;
+  var sd = isNaN(score)?null:score-sm;
+  var rankScore = rd===null ? 50 : Math.max(0,100-Math.abs(rd)/30);
+  var scoreScore = sd===null ? 50 : Math.max(0,100-Math.abs(sd)*45);
+  var trust = Number(row[11]||60);
+  var final = Math.round(rankScore*0.55 + scoreScore*0.30 + trust*0.15);
+  return {rm:rm, sm:sm, rd:rd, sd:sd, rankScore:rankScore, scoreScore:scoreScore, trust:trust, final:final, raw:row};
+}
+function allRows(){
+  var score=parseFloat(document.getElementById('scoreInput').value);
+  var rank=parseInt(document.getElementById('rankInput').value);
+  var kw=normKw(document.getElementById('keyword').value);
+  var arr=[];
+  for(var i=0;i<schools.length;i++){
+    var s=schools[i];
+    var text=normKw(s.join(' '));
+    if(!kw || text.indexOf(kw)>=0) arr.push(composite(s,score,rank));
+  }
   return arr;
 }
 function rowHtml(x,i){
-  let s=x.raw, rd=x.rd, sd=x.sd;
-  return `<tr>
-    <td class="num">${i+1}</td>
-    <td><b>${s[1]}</b><br>${s[12].map(t=>`<span class="tag">${t}</span>`).join('')}</td>
-    <td class="num score">${s[2]===s[3]?s[2]:s[2]+'～'+s[3]}</td>
-    <td class="num">${fmt(s[4])}～${fmt(s[5])}<br><span class="muted">中位 ${fmt(x.rm)}</span></td>
-    <td class="num ${rd>=0?'diffp':'diffn'}">${rd==null?'—':(rd>=0?'+':'')+fmt(rd)}</td>
-    <td class="num">${scoreDiffText(sd)}</td>
-    <td>${statusByRank(rd??999999)}</td>
-    <td class="num"><b>${x.final}</b><br><span class="muted">信度 ${x.trust}%</span></td>
-    <td class="num hide-sm">${s[6]}</td>
-    <td class="hide-sm">${s[7]}</td>
-    <td class="hide-sm">${s[10].join('、')}</td>
-  </tr>`
+  var s=x.raw, rd=x.rd, sd=x.sd;
+  var diffClass = rd===null || isNaN(rd) ? '' : (rd>=0?'diffp':'diffn');
+  var diffText = rd===null || isNaN(rd) ? '—' : (rd>=0?'+':'')+fmt(rd);
+  var tags = '';
+  for(var j=0;j<s[13].length;j++){ tags += '<span class="tag">'+s[13][j]+'</span>'; }
+  return '<tr>'
+    + '<td class="num">'+(i+1)+'</td>'
+    + '<td><b>'+s[1]+'</b><br>'+tags+'</td>'
+    + '<td class="num score">'+s[2]+'</td>'
+    + '<td class="num">'+s[5]+'<br><span class="muted">中位 '+fmt(x.rm)+'</span></td>'
+    + '<td class="num '+diffClass+'">'+diffText+'</td>'
+    + '<td class="num">'+scoreDiffText(sd)+'</td>'
+    + '<td>'+statusByRank(rd)+'</td>'
+    + '<td class="num"><b>'+x.final+'</b><br><span class="muted">信度 '+x.trust+'%</span></td>'
+    + '<td class="num hide-sm">'+s[8]+'</td>'
+    + '<td class="hide-sm">'+s[9]+'</td>'
+    + '<td class="hide-sm">'+s[12].join('、')+'</td>'
+    + '</tr>';
+}
+function tableHtml(rows, limit){
+  if(rows.length===0) return '沒有符合條件的學校。';
+  var out='<table><tr><th>#</th><th>學校</th><th>分數區間</th><th>序位區間</th><th>序位差</th><th>分數差</th><th>距離感</th><th>綜合評分</th><th class="hide-sm">招生</th><th class="hide-sm">行政區</th><th class="hide-sm">來源</th></tr>';
+  var n = limit ? Math.min(limit, rows.length) : rows.length;
+  for(var i=0;i<n;i++) out += rowHtml(rows[i], i);
+  out += '</table>';
+  return out;
 }
 function render(){
-  let rows=makeRows(), score=parseFloat(scoreInput.value), rank=parseInt(rankInput.value);
-  nearTable.innerHTML = rows.length ? `<table><tr><th>#</th><th>學校</th><th>分數區間</th><th>序位區間</th><th>序位差</th><th>分數差</th><th>距離感</th><th>綜合評分</th><th class="hide-sm">招生</th><th class="hide-sm">行政區</th><th class="hide-sm">來源</th></tr>${rows.slice(0,20).map(rowHtml).join('')}</table>` : '沒有符合條件的學校。';
-  let all=schools.map(s=>({...composite(s,score,rank),raw:s})).sort((a,b)=>a.raw[0]-b.raw[0]);
-  mainTable.innerHTML = `<table><tr><th>#</th><th>學校</th><th>分數區間</th><th>序位區間</th><th>序位差</th><th>分數差</th><th>距離感</th><th>綜合評分</th><th class="hide-sm">招生</th><th class="hide-sm">行政區</th><th class="hide-sm">來源</th></tr>${all.map(rowHtml).join('')}</table>`;
+  var score=parseFloat(scoreInput.value), rank=parseInt(rankInput.value), limit=parseInt(rangeFilter.value);
+  var rows=allRows();
+  var nearRows=rows.slice();
+  if(!isNaN(rank) && limit<999999){
+    nearRows=nearRows.filter(function(x){ return x.rd!==null && Math.abs(x.rd)<=limit; });
+  }
+  nearRows.sort(function(a,b){
+    return b.final-a.final || Math.abs(a.rd||999999)-Math.abs(b.rd||999999);
+  });
+  document.getElementById('nearTable').innerHTML = tableHtml(nearRows,20);
+  rows.sort(function(a,b){ return a.raw[0]-b.raw[0]; });
+  document.getElementById('mainTable').innerHTML = tableHtml(rows,0);
   if(!isNaN(score)||!isNaN(rank)){
     summaryCard.style.display='block';
-    summary.innerHTML=`<div class="box"><div class="muted">輸入積分</div><div class="big">${isNaN(score)?'—':score}</div></div>
-    <div class="box"><div class="muted">輸入序位</div><div class="big">${isNaN(rank)?'—':fmt(rank)}</div></div>
-    <div class="box"><div class="muted">最接近學校</div><div class="big">${rows[0]?.raw[1]||'—'}</div></div>
-    <div class="box"><div class="muted">最高綜合評分</div><div class="big">${rows[0]?.final??'—'}</div></div>`;
+    summary.innerHTML='<div class="box"><div class="muted">輸入積分</div><div class="big">'+(isNaN(score)?'—':score)+'</div></div>'
+    +'<div class="box"><div class="muted">輸入序位</div><div class="big">'+(isNaN(rank)?'—':fmt(rank))+'</div></div>'
+    +'<div class="box"><div class="muted">最接近學校</div><div class="big">'+(nearRows[0]?nearRows[0].raw[1]:'—')+'</div></div>'
+    +'<div class="box"><div class="muted">最高綜合評分</div><div class="big">'+(nearRows[0]?nearRows[0].final:'—')+'</div></div>';
   }
 }
 function renderSamples(){
-  sampleTable.innerHTML=`<table><tr><th>積分</th><th>性別</th><th>五科／作文</th><th>總排</th><th>性別序位</th></tr>${samples.map(s=>`<tr><td class="num">${s[0]}</td><td>${s[1]}</td><td>${s[2]}</td><td class="num">${s[3]}</td><td class="num">${s[4]}</td></tr>`).join('')}</table>`;
+  var out='<table><tr><th>積分</th><th>性別</th><th>五科／作文</th><th>總排</th><th>性別序位</th></tr>';
+  for(var i=0;i<samples.length;i++){
+    var s=samples[i];
+    out += '<tr><td class="num">'+s[0]+'</td><td>'+s[1]+'</td><td>'+s[2]+'</td><td class="num">'+s[3]+'</td><td class="num">'+s[4]+'</td></tr>';
+  }
+  out += '</table>';
+  document.getElementById('sampleTable').innerHTML=out;
 }
 render(); renderSamples();
 </script>
