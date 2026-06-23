@@ -1,392 +1,245 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-Hant">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>基北區高中落點分析 V22</title>
-  <style>
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: "Microsoft JhengHei", Arial, sans-serif;
-      background: #f4f6f8;
-      color: #1f2937;
-      line-height: 1.6;
-    }
-    header {
-      background: linear-gradient(135deg, #111827, #1d4ed8);
-      color: white;
-      padding: 30px 18px;
-      text-align: center;
-    }
-    header h1 { margin: 0 0 8px; font-size: 28px; }
-    header p { margin: 0; opacity: .92; }
-    main { max-width: 1200px; margin: 0 auto; padding: 18px; }
-    .card {
-      background: white;
-      border-radius: 14px;
-      padding: 18px;
-      margin-bottom: 16px;
-      box-shadow: 0 4px 14px rgba(15, 23, 42, .08);
-    }
-    h2 { margin: 0 0 12px; font-size: 22px; }
-    .grid {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-    }
-    label { font-weight: 700; font-size: 14px; }
-    input, select {
-      width: 100%;
-      padding: 10px 12px;
-      border: 1px solid #cbd5e1;
-      border-radius: 10px;
-      font-size: 16px;
-      margin-top: 5px;
-    }
-    button {
-      border: 0;
-      border-radius: 10px;
-      padding: 11px 18px;
-      font-size: 16px;
-      font-weight: 700;
-      cursor: pointer;
-      background: #2563eb;
-      color: white;
-    }
-    button.secondary { background: #475569; }
-    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 14px; }
-    .note {
-      background: #eff6ff;
-      border-left: 5px solid #2563eb;
-      padding: 12px;
-      border-radius: 10px;
-      font-size: 14px;
-    }
-    .summary {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(0, 1fr));
-      gap: 12px;
-    }
-    .summary div {
-      background: #f8fafc;
-      border-radius: 12px;
-      padding: 12px;
-      border: 1px solid #e2e8f0;
-    }
-    .summary strong { display: block; font-size: 22px; }
-    .section-title {
-      margin: 18px 0 10px;
-      padding: 10px 12px;
-      border-radius: 10px;
-      font-weight: 800;
-      font-size: 18px;
-    }
-    .dream-title { background: #fee2e2; color: #991b1b; }
-    .challenge-title { background: #ffedd5; color: #9a3412; }
-    .steady-title { background: #dcfce7; color: #166534; }
-    .safe-title { background: #dbeafe; color: #1d4ed8; }
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      font-size: 14px;
-    }
-    th, td {
-      padding: 10px;
-      border-bottom: 1px solid #e5e7eb;
-      text-align: left;
-      vertical-align: top;
-    }
-    th { background: #f1f5f9; }
-    .table-wrap {
-      overflow-x: auto;
-      border: 1px solid #e5e7eb;
-      border-radius: 12px;
-      margin-bottom: 12px;
-    }
-    .pill {
-      display: inline-block;
-      padding: 3px 9px;
-      border-radius: 999px;
-      font-weight: 700;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-    .safe { background: #dbeafe; color: #1d4ed8; }
-    .steady { background: #dcfce7; color: #166534; }
-    .challenge { background: #ffedd5; color: #9a3412; }
-    .dream { background: #fee2e2; color: #991b1b; }
-    .muted { color: #64748b; font-size: 13px; }
-    .rank-good { color: #047857; font-weight: 700; }
-    .rank-bad { color: #b91c1c; font-weight: 700; }
-    .small { font-size: 13px; }
-    footer { text-align: center; padding: 24px; color: #64748b; font-size: 13px; }
-    @media (max-width: 900px) {
-      .grid, .summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    }
-    @media (max-width: 560px) {
-      .grid, .summary { grid-template-columns: 1fr; }
-      header h1 { font-size: 23px; }
-      th, td { padding: 8px; }
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>基北區高中落點分析 V23</title>
+<style>
+body{margin:0;background:#f5f7fb;color:#1f2937;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",Arial,sans-serif}
+.wrap{max-width:1180px;margin:auto;padding:18px 14px 80px}
+.hero{background:linear-gradient(135deg,#102a53,#1769d6);color:white;border-radius:24px;padding:24px 18px;box-shadow:0 10px 28px #0002}
+.hero h1{margin:0 0 8px;font-size:26px}
+.hero p{margin:0;line-height:1.7;font-size:14px}
+.card{background:white;border:1px solid #e5e7eb;border-radius:18px;padding:16px;margin:14px 0;box-shadow:0 6px 18px #0001}
+.grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}
+@media(max-width:850px){.grid{grid-template-columns:1fr 1fr}table{font-size:12px}.hide-sm{display:none}}
+input,select,button{box-sizing:border-box;width:100%;padding:12px;border:1px solid #d0d5dd;border-radius:12px;font-size:15px}
+button{background:#1769d6;color:white;border:0;font-weight:900;cursor:pointer}
+button.secondary{background:#475467}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{border-bottom:1px solid #e5e7eb;padding:9px 6px;text-align:left;vertical-align:top}
+th{background:#f9fafb;color:#475467;font-size:12px}
+td.num{text-align:right;font-variant-numeric:tabular-nums}
+.tag{display:inline-block;background:#eef3fb;color:#0f4ea3;border-radius:999px;padding:2px 8px;font-size:12px;margin:2px}
+.note{background:#fff7e6;border:1px solid #e7b84b;color:#8a5a00;border-radius:14px;padding:12px;line-height:1.65;font-size:13px}
+.diffp{color:#067647;font-weight:900}
+.diffn{color:#b42318;font-weight:900}
+.score{font-weight:900;color:#0f4ea3}
+.muted{color:#667085;font-size:12px}
+.good{color:#067647;font-weight:900}
+.mid{color:#b8860b;font-weight:900}
+.warn{color:#b42318;font-weight:900}
+h2{font-size:18px;margin:0 0 12px}
+.summary{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+@media(max-width:850px){.summary{grid-template-columns:1fr 1fr}}
+.box{background:#f7f9fc;border:1px solid #e5e7eb;border-radius:16px;padding:12px}
+.big{font-size:22px;font-weight:950}
+.zone-title{margin:14px 0 8px;padding:10px 12px;border-radius:14px;font-weight:950}
+.zone-dream{background:#fee2e2;color:#991b1b}
+.zone-challenge{background:#ffedd5;color:#9a3412}
+.zone-stable{background:#dcfce7;color:#166534}
+.zone-safe{background:#dbeafe;color:#1d4ed8}
+.pill{display:inline-block;border-radius:999px;padding:3px 9px;font-size:12px;font-weight:900;white-space:nowrap}
+</style>
 </head>
 <body>
-<header>
-  <h1>基北區高中落點分析 V22</h1>
-  <p>區間制 + 志願排序制｜先判斷落點區間，再依學校強度排序</p>
-</header>
+<div class="wrap">
+<section class="hero">
+<h1>基北區高中落點分析 V23</h1>
+<p>延續 V20.4 正式資料庫與排序核心，改用「夢幻／挑戰／穩定／安全」區間制，不再用容易誤解的分數評分。</p>
+</section>
 
-<main>
-  <section class="card">
-    <h2>輸入條件</h2>
-    <div class="grid">
-      <div>
-        <label>會考積分</label>
-        <input id="scoreInput" type="number" step="0.1" value="21.6" />
-      </div>
-      <div>
-        <label>個人序位</label>
-        <input id="rankInput" type="number" value="14610" />
-      </div>
-      <div>
-        <label>分析角度</label>
-        <select id="modeInput">
-          <option value="balanced" selected>平衡：正常選填</option>
-          <option value="safe">保守：偏安全</option>
-          <option value="attack">積極：偏挑戰</option>
-        </select>
-      </div>
-      <div>
-        <label>顯示範圍</label>
-        <select id="rangeInput">
-          <option value="6000" selected>常用：序位前後 6000</option>
-          <option value="9000">放寬：序位前後 9000</option>
-          <option value="999999">顯示全部</option>
-        </select>
-      </div>
-    </div>
-    <div class="actions">
-      <button onclick="analyze()">更新分析</button>
-      <button class="secondary" onclick="resetDefault()">帶入又丞目前資料</button>
-    </div>
-    <p class="note">
-      V22 修正：取消容易誤解的「V21 評分」。高中落點改用四區判斷：
-      夢幻、挑戰、穩定、安全。每個區間內再依學校強度排序，所以會維持
-      「中正 > 陽明 > 永平」這種較符合志願選填直覺的排序。
-    </p>
-  </section>
+<section class="card">
+<h2>輸入條件</h2>
+<div class="grid">
+<div><input id="scoreInput" type="number" step="0.1" placeholder="積分，例如 21.6"></div>
+<div><input id="rankInput" type="number" placeholder="序位，例如 14610"></div>
+<div><input id="keyword" placeholder="搜尋學校／行政區"></div>
+<div><select id="rangeFilter"><option value="strict">嚴格：分數±1.0 或序位±3000</option><option value="normal" selected>一般：分數±1.5 或序位±5000</option><option value="wide">放寬：分數±2.5 或序位±8000</option><option value="all">顯示全部</option></select></div>
+<div><button onclick="render()">更新分析</button></div>
+</div>
+<div class="grid" style="margin-top:10px">
+<div><button class="secondary" onclick="loadExample()">載入範例資料</button></div>
+<div class="note" style="grid-column:span 4">範例資料：會考積分 21.6、個人序位 14610。V23 保留 V20.4 的學校資料，不再使用示意資料。</div>
+</div>
+<div class="note" style="margin-top:10px">
+V23 邏輯：先用「分數或序位接近」篩選，再依學校序位由前到後排列；同時新增區間判斷。
+區間內仍依學校強度排序，所以會維持較符合志願直覺的排序，例如百齡／中正／陽明／永平。
+</div>
+</section>
 
-  <section class="card">
-    <h2>分析摘要</h2>
-    <div id="summary" class="summary"></div>
-  </section>
-
-  <section class="card">
-    <h2>V22 志願排序建議</h2>
-    <div id="groupedResults"></div>
-  </section>
-
-  <section class="card">
-    <h2>完整學校資料庫</h2>
-    <p class="muted">目前先放 V22 內建資料。你之後貼最新資料，我再幫你替換成正式資料庫。</p>
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>學校</th>
-            <th>區域</th>
-            <th>參考分數</th>
-            <th>序位低標</th>
-            <th>序位高標</th>
-            <th>中位序位</th>
-            <th>強度</th>
-            <th>通勤</th>
-          </tr>
-        </thead>
-        <tbody id="dbBody"></tbody>
-      </table>
-    </div>
-  </section>
-</main>
-
-<footer>
-  V22｜本工具為志願排序輔助模型，正式結果仍需依當年度招生名額、實際填志願人數與錄取公告調整。
-</footer>
+<section id="summaryCard" class="card" style="display:none"><h2>分析摘要</h2><div id="summary" class="summary"></div></section>
+<section class="card"><h2>V23 志願排序建議</h2><div id="zoneTable"></div></section>
+<section class="card"><h2>可參考學校排序</h2><div id="nearTable"></div></section>
+<section class="card"><h2>完整學校序位資料庫</h2><div id="mainTable"></div></section>
+<section class="card"><h2>真實考生樣本庫</h2><div id="sampleTable"></div></section>
+<section class="card"><div class="note">目前資料沿用 V20.4：整合自補習班落點截圖、PDF、真實考生序位樣本與前幾版模型資料。部分學校仍屬多來源推估區間，後續可再用正式錄取結果校正。</div></section>
+</div>
 
 <script>
-const schoolData = [
-  { name:"和平高中", area:"北市", score:23.2, rankLow:9000, rankHigh:11200, strength:106, commute:"約 25-50 分", note:"高挑戰參考" },
-  { name:"明倫高中", area:"北市", score:22.8, rankLow:10500, rankHigh:12500, strength:103, commute:"約 40-70 分", note:"偏挑戰" },
-  { name:"中正高中", area:"北市", score:22.4, rankLow:12200, rankHigh:14200, strength:100, commute:"約 30-60 分", note:"V22：挑戰區優先參考" },
-  { name:"陽明高中", area:"北市", score:21.8, rankLow:13800, rankHigh:15800, strength:95, commute:"約 30-60 分", note:"核心參考校" },
-  { name:"永平高中", area:"新北", score:21.1, rankLow:14800, rankHigh:17000, strength:88, commute:"約 30-60 分", note:"穩定參考校" },
-  { name:"百齡高中", area:"北市", score:20.9, rankLow:15500, rankHigh:17800, strength:86, commute:"約 30-60 分", note:"穩定參考校" },
-  { name:"南港高中", area:"北市", score:20.6, rankLow:16500, rankHigh:19000, strength:83, commute:"約 45-75 分", note:"偏穩定" },
-  { name:"大安高工", area:"北市", score:20.3, rankLow:17000, rankHigh:21000, strength:82, commute:"約 30-60 分", note:"技高熱門科需另看" },
-  { name:"華江高中", area:"北市", score:20.4, rankLow:17200, rankHigh:19800, strength:81, commute:"約 35-70 分", note:"安全區參考" },
-  { name:"松山工農", area:"北市", score:20.0, rankLow:18000, rankHigh:22000, strength:77, commute:"約 40-75 分", note:"技高/綜高需另看科別" },
-  { name:"育成高中", area:"北市", score:20.1, rankLow:18500, rankHigh:21500, strength:78, commute:"約 45-80 分", note:"安全區參考" },
-  { name:"復興高中", area:"北市", score:19.9, rankLow:19500, rankHigh:22500, strength:76, commute:"約 45-80 分", note:"安全區參考" },
-  { name:"清水高中", area:"新北", score:19.6, rankLow:20500, rankHigh:23800, strength:73, commute:"約 50-85 分", note:"安全備選" },
-  { name:"三民高中", area:"新北", score:19.4, rankLow:21500, rankHigh:25000, strength:71, commute:"約 50-90 分", note:"安全備選" }
-];
+var schools = [[1, "北一女中", "33.8", 33.8, 33.8, "710～1700", 710, 1700, "704", "中正", "高中", 70, ["補習班/歷史資料"], ["女校", "數理資優", "語文資優"]], [2, "建國中學", "34.6", 34.6, 34.6, "854～950", 854, 950, "840", "中正", "高中", 80, ["補習班/歷史資料"], ["男校", "科學班", "數理資優"]], [3, "師大附中", "32.8～33.6", 32.8, 33.6, "910～2500", 910, 2500, "約661", "大安", "高中", 65, ["補習班/歷史資料"], ["科學班", "數理資優", "校風自由"]], [4, "成功高中", "31.8", 31.8, 31.8, "1914～3372", 1914, 3372, "641", "中正", "高中", 75, ["補習班/歷史資料", "真實樣本"], ["男校", "升學穩定"]], [5, "中山女高", "30.8", 30.8, 30.8, "1620～4270", 1620, 4270, "709", "中山", "高中", 70, ["補習班/歷史資料"], ["女校", "語文資優"]], [6, "松山高中", "29.8～30.6", 29.8, 30.6, "1962～4500", 1962, 4500, "646", "信義", "高中", 70, ["補習班/歷史資料"], ["交通便利", "升學穩定"]], [7, "大同高中", "29.8", 29.8, 29.8, "4700～5154", 4700, 5154, "462", "中山", "高中", 75, ["補習班/歷史資料", "樣本區間"], ["市區便利"]], [8, "政大附中", "28.6～28.8", 28.6, 28.8, "5200～6155", 5200, 6155, "163", "文山", "高中", 75, ["補習班/歷史資料"], ["校風自由", "多元發展"]], [9, "中崙高中", "28.6～28.8", 28.6, 28.8, "5400～5907", 5400, 5907, "260", "松山", "高中", 75, ["補習班/歷史資料"], ["交通便利"]], [10, "板橋高中", "27.8～28.6", 27.8, 28.6, "5900～6653", 5900, 6653, "601", "板橋", "高中", 75, ["補習班/歷史資料"], ["新北前段"]], [11, "成淵高中", "27.6～27.8", 27.6, 27.8, "6700～7100", 6700, 7100, "296", "大同", "高中", 70, ["補習班/歷史資料"], ["市區便利"]], [12, "麗山高中", "26.8～27.8", 26.8, 27.8, "6500～7410", 6500, 7410, "230", "內湖", "高中", 75, ["補習班/歷史資料"], ["數理強", "科展特色"]], [13, "海山高中", "26.6", 26.6, 26.6, "7800～8032", 7800, 8032, "256", "板橋", "高中", 75, ["補習班/歷史資料", "樣本區間"], ["新北熱門"]], [14, "和平高中", "25.8", 25.8, 25.8, "7400～8284", 7400, 8284, "323", "大安", "高中", 75, ["補習班/歷史資料"], ["通勤優勢", "數理資優"]], [15, "大直高中", "25.6～27.8", 25.6, 27.8, "7000～8674", 7000, 8674, "237", "中山", "高中", 65, ["補習班/歷史資料"], ["環境佳"]], [16, "明倫高中", "25.4～25.6", 25.4, 25.6, "8600～9324", 8600, 9324, "428", "大同", "高中", 75, ["補習班/歷史資料"], ["校風穩定"]], [17, "西松高中", "24.6～24.8", 24.6, 24.8, "8400～9708", 8400, 9708, "265", "松山", "高中", 70, ["補習班/歷史資料"], ["交通便利"]], [18, "北大高中", "23.6～24.6", 23.6, 24.6, "9000～9956", 9000, 9956, "132", "三峽", "高中", 65, ["補習班/歷史資料"], ["環境佳"]], [19, "內湖高中", "23.6", 23.6, 23.6, "9500～10841", 9500, 10841, "528", "內湖", "高中", 70, ["補習班/歷史資料"], ["科技生活圈"]], [20, "百齡高中", "22.8～23.8", 22.8, 23.8, "9300～11352", 9300, 11352, "200", "士林", "高中", 70, ["補習班/歷史資料"], ["AI學程"]], [21, "景美女中", "22.8～23.0", 22.8, 23.0, "10000～11637", 10000, 11637, "461", "文山", "高中", 75, ["補習班/歷史資料"], ["女校", "通勤極佳", "語文資優"]], [22, "中正高中", "22.6", 22.6, 22.6, "10600～11765", 10600, 11765, "449", "北投", "高中", 75, ["補習班/歷史資料"], ["校地大", "語文資優"]], [23, "中和高中", "21.8～22.6", 21.8, 22.6, "11200～13071", 11200, 13071, "467", "中和", "高中", 75, ["補習班/歷史資料"], ["生活機能佳"]], [24, "陽明高中", "21.6～21.8", 21.6, 21.8, "13702～13806", 13702, 13806, "342", "士林", "高中", 95, ["宏偉", "林群", "甄戰"], ["AI智慧班", "雙語班", "數理資優"]], [25, "南湖高中", "21.6～21.8", 21.6, 21.8, "12850～13702", 12850, 13702, "443", "內湖", "高中", 80, ["補習班/歷史資料"], ["資訊特色"]], [26, "新莊高中", "20.6～21.1", 20.6, 21.1, "13100～14736", 13100, 14736, "506", "新莊", "高中", 70, ["補習班/歷史資料"], ["新北大型校"]], [27, "永平高中", "20.6", 20.6, 20.6, "14100～14736", 14100, 14736, "255", "永和", "高中", 75, ["補習班/歷史資料"], ["永和生活圈"]], [28, "南港高中", "20.6～21.8", 20.6, 21.8, "13600～15040", 13600, 15040, "194", "南港", "高中", 75, ["補習班/歷史資料"], ["科技生活圈", "資訊特色"]], [29, "華江高中", "19.6～19.8", 19.6, 19.8, "14400～15698", 14400, 15698, "433", "萬華", "高中", 75, ["補習班/歷史資料"], ["市區便利"]], [30, "新北高中", "17.8", 17.8, 17.8, "14800～15200", 14800, 15200, "—", "三重", "高中", 60, ["補習班/歷史資料"], ["新北大型校"]], [31, "丹鳳高中", "18.8", 18.8, 18.8, "15000～15400", 15000, 15400, "—", "新莊", "高中", 60, ["補習班/歷史資料"], ["校風穩定"]], [32, "永春高中", "18.6", 18.6, 18.6, "15300～15700", 15300, 15700, "—", "信義", "高中", 60, ["補習班/歷史資料"], ["交通便利"]], [33, "新店高中", "17.8", 17.8, 17.8, "17000～17450", 17000, 17450, "—", "新店", "高中", 55, ["補習班/歷史資料"], ["通勤優勢"]], [34, "萬芳高中", "17.6", 17.6, 17.6, "17350～17800", 17350, 17800, "—", "文山", "高中", 55, ["補習班/歷史資料"], ["文山近距離"]], [35, "錦和高中", "16.6", 16.6, 16.6, "19200～19600", 19200, 19600, "—", "中和", "高中", 55, ["補習班/歷史資料"], ["中和生活圈"]]];
+var samples = [["22.6", "男", "國A", "12530～12675", "6894～7009"], ["21.6", "男", "未完整提供", "14610～14735", "7953～8052"], ["21.6", "女", "國B、數B+、英A、社A、自B、作文4", "14484～14609", "6561～6660"], ["20.8", "未提供", "國B++、數B++、英B+、社A、自B++、作文5", "14997～15120", "—"], ["20.6", "男", "國B、數B++、英A++", "15948～16070", "8662～8761"], ["18.8", "女", "國B、數B、英A、社A、自B、作文5", "17616～17745", "8106～8205"]];
 
-function midRank(s) {
-  return Math.round((s.rankLow + s.rankHigh) / 2);
+function fmt(n){ if(n===null || isNaN(n)) return '—'; return Math.round(n).toLocaleString('zh-TW'); }
+function mid(a,b){ return Math.round((Number(a)+Number(b))/2); }
+function scoreMid(s){ return Math.round(((Number(s[3])+Number(s[4]))/2)*10)/10; }
+function scoreDiffText(d){ if(d===null || isNaN(d)) return '—'; return (d>=0?'+':'')+Number(d).toFixed(1); }
+function normKw(s){ return String(s||'').replace(/區/g,'').trim(); }
+function statusByRank(d){
+  if(d===null || isNaN(d)) return '—';
+  var ad=Math.abs(d);
+  if(ad<=500) return '<span class="good">非常接近</span>';
+  if(ad<=1000) return '<span class="mid">接近</span>';
+  if(ad<=3000) return '<span class="mid">可參考</span>';
+  return '<span class="warn">距離較遠</span>';
 }
-
-function getThreshold(mode) {
-  if (mode === "safe") {
-    return { dream: -2500, challenge: -800, steady: 1800 };
+function zoneByDiff(rd, sd){
+  if(rd===null || isNaN(rd)) {
+    if(sd!==null && !isNaN(sd)) {
+      if(sd < -1.8) return 'dream';
+      if(sd < -0.6) return 'challenge';
+      if(sd <= 0.8) return 'stable';
+      return 'safe';
+    }
+    return 'stable';
   }
-  if (mode === "attack") {
-    return { dream: -3800, challenge: -1500, steady: 1000 };
+  if(rd < -3000 || (sd!==null && !isNaN(sd) && sd < -1.8)) return 'dream';
+  if(rd < -1000 || (sd!==null && !isNaN(sd) && sd < -0.6)) return 'challenge';
+  if(rd <= 1800 || (sd!==null && !isNaN(sd) && sd <= 0.8)) return 'stable';
+  return 'safe';
+}
+function zoneMeta(z){
+  var m={
+    dream:['夢幻區','可放前面衝，但不要當主力志願。','zone-dream',1],
+    challenge:['挑戰區','有機會，可作為前段衝刺志願。','zone-challenge',2],
+    stable:['穩定區','最適合作為主力志願。','zone-stable',3],
+    safe:['安全區','適合作為保底與備援。','zone-safe',4]
+  };
+  return m[z] || m.stable;
+}
+function composite(row,score,rank){
+  var rm=mid(row[6],row[7]), sm=scoreMid(row);
+  var rd = isNaN(rank)?null:rm-rank;
+  var sd = isNaN(score)?null:score-sm;
+  var trust = Number(row[11]||60);
+  return {rm:rm, sm:sm, rd:rd, sd:sd, trust:trust, zone:zoneByDiff(rd,sd), raw:row};
+}
+function thresholds(){
+  var v=rangeFilter.value;
+  if(v==='strict') return {score:1.0, rank:3000, all:false};
+  if(v==='wide') return {score:2.5, rank:8000, all:false};
+  if(v==='all') return {score:999, rank:999999, all:true};
+  return {score:1.5, rank:5000, all:false};
+}
+function allRows(){
+  var score=parseFloat(scoreInput.value);
+  var rank=parseInt(rankInput.value);
+  var kw=normKw(keyword.value);
+  var arr=[];
+  for(var i=0;i<schools.length;i++){
+    var s=schools[i], text=normKw(s.join(' '));
+    if(!kw || text.indexOf(kw)>=0) arr.push(composite(s,score,rank));
   }
-  return { dream: -3000, challenge: -1000, steady: 1500 };
+  return arr;
 }
-
-function classify(s, userScore, userRank, mode) {
-  const diff = midRank(s) - userRank;
-  const scoreDiff = userScore - s.score;
-  const t = getThreshold(mode);
-
-  let level = "safe";
-  if (diff < t.dream || scoreDiff < -2.0) level = "dream";
-  else if (diff < t.challenge || scoreDiff < -0.8) level = "challenge";
-  else if (diff <= t.steady || scoreDiff < 0.7) level = "steady";
-  else level = "safe";
-
-  return { level, diff, scoreDiff };
+function isRelevant(x, t){
+  if(t.all) return true;
+  var hasScore = !(x.sd===null || isNaN(x.sd));
+  var hasRank = !(x.rd===null || isNaN(x.rd));
+  if(!hasScore && !hasRank) return true;
+  return (hasScore && Math.abs(x.sd)<=t.score) || (hasRank && Math.abs(x.rd)<=t.rank);
 }
-
-function levelMeta(level) {
-  const map = {
-    dream: { title:"夢幻區", desc:"放前面可以衝，但不要當主力志願。", cls:"dream", titleCls:"dream-title", order:1 },
-    challenge: { title:"挑戰區", desc:"有機會，但需要志願策略搭配。", cls:"challenge", titleCls:"challenge-title", order:2 },
-    steady: { title:"穩定區", desc:"最適合作為主力志願。", cls:"steady", titleCls:"steady-title", order:3 },
-    safe: { title:"安全區", desc:"適合作為保底與備援。", cls:"safe", titleCls:"safe-title", order:4 }
-  };
-  return map[level];
+function rowHtml(x,i){
+  var s=x.raw, rd=x.rd, sd=x.sd, meta=zoneMeta(x.zone);
+  var diffClass = rd===null || isNaN(rd) ? '' : (rd>=0?'diffp':'diffn');
+  var diffText = rd===null || isNaN(rd) ? '—' : (rd>=0?'+':'')+fmt(rd);
+  var tags = '';
+  for(var j=0;j<s[13].length;j++){ tags += '<span class="tag">'+s[13][j]+'</span>'; }
+  return '<tr>'
+    + '<td class="num">'+(i+1)+'</td>'
+    + '<td><b>'+s[1]+'</b><br>'+tags+'</td>'
+    + '<td><span class="pill '+meta[2]+'">'+meta[0]+'</span></td>'
+    + '<td class="num score">'+s[2]+'</td>'
+    + '<td class="num">'+s[5]+'<br><span class="muted">中位 '+fmt(x.rm)+'</span></td>'
+    + '<td class="num '+diffClass+'">'+diffText+'</td>'
+    + '<td class="num">'+scoreDiffText(sd)+'</td>'
+    + '<td>'+statusByRank(rd)+'</td>'
+    + '<td class="num hide-sm">'+s[8]+'</td>'
+    + '<td class="hide-sm">'+s[9]+'</td>'
+    + '<td class="hide-sm">'+s[12].join('、')+'</td>'
+    + '</tr>';
 }
-
-function renderTable(rows, startIndex) {
-  if (!rows.length) return '<p class="muted">此區暫無學校。</p>';
-  return `
-    <div class="table-wrap">
-      <table>
-        <thead>
-          <tr>
-            <th>建議序</th>
-            <th>學校</th>
-            <th>區域</th>
-            <th>參考分數</th>
-            <th>參考序位</th>
-            <th>序位差</th>
-            <th>判斷</th>
-            <th>備註</th>
-          </tr>
-        </thead>
-        <tbody>
-          ${rows.map((s, i) => {
-            const meta = levelMeta(s.analysis.level);
-            const diffText = s.analysis.diff >= 0
-              ? `<span class="rank-good">+${s.analysis.diff}</span>`
-              : `<span class="rank-bad">${s.analysis.diff}</span>`;
-            return `
-              <tr>
-                <td><strong>${startIndex + i}</strong></td>
-                <td><strong>${s.name}</strong></td>
-                <td>${s.area}</td>
-                <td>${s.score}</td>
-                <td>${s.rankLow.toLocaleString()} ~ ${s.rankHigh.toLocaleString()}</td>
-                <td>${diffText}</td>
-                <td><span class="pill ${meta.cls}">${meta.title}</span></td>
-                <td>${s.note || ""}<br><span class="muted">${s.commute || ""}</span></td>
-              </tr>
-            `;
-          }).join("")}
-        </tbody>
-      </table>
-    </div>
-  `;
+function tableHtml(rows, limit){
+  if(rows.length===0) return '沒有符合條件的學校。';
+  var out='<table><tr><th>#</th><th>學校</th><th>落點區間</th><th>分數區間</th><th>序位區間</th><th>序位差</th><th>分數差</th><th>距離感</th><th class="hide-sm">招生</th><th class="hide-sm">行政區</th><th class="hide-sm">來源</th></tr>';
+  var n = limit ? Math.min(limit, rows.length) : rows.length;
+  for(var i=0;i<n;i++) out += rowHtml(rows[i], i);
+  out += '</table>';
+  return out;
 }
-
-function analyze() {
-  const userScore = Number(document.getElementById("scoreInput").value);
-  const userRank = Number(document.getElementById("rankInput").value);
-  const mode = document.getElementById("modeInput").value;
-  const range = Number(document.getElementById("rangeInput").value);
-
-  const rows = schoolData
-    .map(s => ({ ...s, analysis: classify(s, userScore, userRank, mode) }))
-    .filter(s => Math.abs(s.analysis.diff) <= range || Math.abs(userScore - s.score) <= 2.8)
-    .sort((a, b) => {
-      const ma = levelMeta(a.analysis.level);
-      const mb = levelMeta(b.analysis.level);
-      if (ma.order !== mb.order) return ma.order - mb.order;
-      if (b.strength !== a.strength) return b.strength - a.strength;
-      return a.rankLow - b.rankLow;
-    });
-
-  const groups = {
-    dream: rows.filter(s => s.analysis.level === "dream"),
-    challenge: rows.filter(s => s.analysis.level === "challenge"),
-    steady: rows.filter(s => s.analysis.level === "steady"),
-    safe: rows.filter(s => s.analysis.level === "safe")
-  };
-
-  let html = "";
-  let index = 1;
-  ["dream", "challenge", "steady", "safe"].forEach(level => {
-    const meta = levelMeta(level);
-    html += `<div class="section-title ${meta.titleCls}">${meta.title}｜${meta.desc}</div>`;
-    html += renderTable(groups[level], index);
-    index += groups[level].length;
+function zoneHtml(rows){
+  if(rows.length===0) return '沒有符合條件的學校。';
+  var out='', order=['dream','challenge','stable','safe'], seq=1;
+  for(var k=0;k<order.length;k++){
+    var z=order[k], meta=zoneMeta(z);
+    var group=rows.filter(function(x){return x.zone===z;});
+    out += '<div class="zone-title '+meta[2]+'">'+meta[0]+'｜'+meta[1]+'</div>';
+    if(group.length===0) {
+      out += '<div class="muted" style="margin-bottom:10px">此區暫無學校。</div>';
+    } else {
+      out += '<table><tr><th>建議序</th><th>學校</th><th>分數區間</th><th>序位區間</th><th>序位差</th><th>分數差</th><th class="hide-sm">備註</th></tr>';
+      for(var i=0;i<group.length;i++){
+        var x=group[i], s=x.raw;
+        var diffClass = x.rd===null || isNaN(x.rd) ? '' : (x.rd>=0?'diffp':'diffn');
+        var diffText = x.rd===null || isNaN(x.rd) ? '—' : (x.rd>=0?'+':'')+fmt(x.rd);
+        out += '<tr><td class="num"><b>'+(seq++)+'</b></td><td><b>'+s[1]+'</b></td><td class="num score">'+s[2]+'</td><td class="num">'+s[5]+'<br><span class="muted">中位 '+fmt(x.rm)+'</span></td><td class="num '+diffClass+'">'+diffText+'</td><td class="num">'+scoreDiffText(x.sd)+'</td><td class="hide-sm">'+s[13].join('、')+'</td></tr>';
+      }
+      out += '</table>';
+    }
+  }
+  return out;
+}
+function render(){
+  var score=parseFloat(scoreInput.value), rank=parseInt(rankInput.value), t=thresholds();
+  var rows=allRows();
+  var refRows=rows.filter(function(x){ return isRelevant(x,t); });
+  refRows.sort(function(a,b){
+    var za=zoneMeta(a.zone)[3], zb=zoneMeta(b.zone)[3];
+    if(za!==zb) return za-zb;
+    return a.rm-b.rm;
   });
-
-  document.getElementById("groupedResults").innerHTML = html;
-
-  const topSteady = groups.steady[0] ? groups.steady[0].name : "暫無";
-  const topChallenge = groups.challenge[0] ? groups.challenge[0].name : "暫無";
-  const topSafe = groups.safe[0] ? groups.safe[0].name : "暫無";
-
-  document.getElementById("summary").innerHTML = `
-    <div><span class="muted">目前輸入</span><strong>${userScore} 分</strong><span>序位 ${userRank.toLocaleString()}</span></div>
-    <div><span class="muted">挑戰首選</span><strong>${topChallenge}</strong><span>可放前段衝刺</span></div>
-    <div><span class="muted">主力志願</span><strong>${topSteady}</strong><span>建議作為核心排序</span></div>
-    <div><span class="muted">安全備援</span><strong>${topSafe}</strong><span>避免志願落空</span></div>
-  `;
+  zoneTable.innerHTML = zoneHtml(refRows);
+  nearTable.innerHTML = tableHtml(refRows,30);
+  rows.sort(function(a,b){ return a.raw[0]-b.raw[0]; });
+  mainTable.innerHTML = tableHtml(rows,0);
+  if(!isNaN(score)||!isNaN(rank)){
+    summaryCard.style.display='block';
+    var challenge = refRows.filter(function(x){return x.zone==='challenge';})[0];
+    var stable = refRows.filter(function(x){return x.zone==='stable';})[0];
+    var safe = refRows.filter(function(x){return x.zone==='safe';})[0];
+    summary.innerHTML='<div class="box"><div class="muted">輸入積分</div><div class="big">'+(isNaN(score)?'—':score)+'</div></div>'
+    +'<div class="box"><div class="muted">輸入序位</div><div class="big">'+(isNaN(rank)?'—':fmt(rank))+'</div></div>'
+    +'<div class="box"><div class="muted">主力志願</div><div class="big">'+(stable?stable.raw[1]:'—')+'</div></div>'
+    +'<div class="box"><div class="muted">挑戰首選</div><div class="big">'+(challenge?challenge.raw[1]:'—')+'</div></div>';
+  }
 }
-
-function renderDb() {
-  document.getElementById("dbBody").innerHTML = schoolData
-    .slice()
-    .sort((a,b) => b.strength - a.strength)
-    .map(s => `
-      <tr>
-        <td><strong>${s.name}</strong></td>
-        <td>${s.area}</td>
-        <td>${s.score}</td>
-        <td>${s.rankLow.toLocaleString()}</td>
-        <td>${s.rankHigh.toLocaleString()}</td>
-        <td>${midRank(s).toLocaleString()}</td>
-        <td>${s.strength}</td>
-        <td>${s.commute || ""}</td>
-      </tr>
-    `).join("");
+function renderSamples(){
+  var out='<table><tr><th>積分</th><th>性別</th><th>五科／作文</th><th>總排</th><th>性別序位</th></tr>';
+  for(var i=0;i<samples.length;i++){
+    var s=samples[i];
+    out += '<tr><td class="num">'+s[0]+'</td><td>'+s[1]+'</td><td>'+s[2]+'</td><td class="num">'+s[3]+'</td><td class="num">'+s[4]+'</td></tr>';
+  }
+  out += '</table>';
+  sampleTable.innerHTML=out;
 }
-
-function resetDefault() {
-  document.getElementById("scoreInput").value = "21.6";
-  document.getElementById("rankInput").value = "14610";
-  document.getElementById("modeInput").value = "balanced";
-  document.getElementById("rangeInput").value = "6000";
-  analyze();
+function loadExample(){
+  scoreInput.value='21.6';
+  rankInput.value='14610';
+  keyword.value='';
+  rangeFilter.value='normal';
+  render();
 }
-
-renderDb();
-analyze();
+render(); renderSamples();
 </script>
 </body>
 </html>
