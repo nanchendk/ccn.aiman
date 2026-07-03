@@ -1,0 +1,556 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>大長腿來闖關｜英文文法小遊戲</title>
+  <style>
+    :root{
+      /* 主色調：奶油底 + 白卡片 + 覆盆莓粉點綴 + 深梅色文字 + 綠色代表答對 */
+      --bg1:#fff8f4;      /* 溫暖奶油 */
+      --bg2:#ffe8f0;      /* 淡淡腮紅粉 */
+      --card:#ffffff;     /* 乾淨白卡片，做出層次 */
+      --panel:#fff5f9;
+      --text:#3f2233;     /* 深梅棕，比純黑柔和 */
+      --muted:#9a6b81;
+      --accent:#e84c8a;   /* 覆盆莓粉，比霓虹粉更有質感 */
+      --accent2:#ffb3d1;
+      --heading:#c62f76;
+      --good:#12a150;     /* 翠綠：答對 */
+      --bad:#e5484d;
+      --line:#f3cad9;     /* 柔和粉邊框 */
+      --mint:#e6f7ef;     /* 答對淡綠底 */
+      --redbg:#fdecec;
+    }
+    *{box-sizing:border-box}
+    body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans TC",Arial,sans-serif;background:linear-gradient(150deg,var(--bg1),var(--bg2));color:var(--text);min-height:100vh}
+    .wrap{max-width:1020px;margin:0 auto;padding:28px 16px 56px}
+    header{display:flex;gap:14px;align-items:center;justify-content:space-between;margin-bottom:18px}
+    h1{font-size:34px;margin:0;color:var(--heading);text-shadow:0 2px 0 rgba(255,255,255,.75)}
+    .sub{color:var(--muted);font-size:14px;margin-top:4px}
+    .pill{border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 12px;color:var(--heading);font-size:14px;font-weight:800}
+    .grid{display:grid;grid-template-columns:300px 1fr;gap:16px}
+    .card{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;box-shadow:0 12px 30px rgba(190,24,93,.10)}
+    .map button{width:100%;text-align:left;margin:7px 0;padding:12px 13px;border-radius:16px;border:1px solid var(--line);background:#fff;color:var(--text);cursor:pointer;transition:.15s}
+    .map button:hover{border-color:var(--accent)}
+    .map button.active{border-color:var(--accent);box-shadow:0 0 0 3px rgba(232,76,138,.15);background:var(--panel)}
+    .level-title{font-weight:900}
+    .level-note{color:var(--muted);font-size:12px;margin-top:4px;line-height:1.35}
+    .stage{font-size:14px;color:var(--accent);font-weight:900;margin-bottom:10px}
+    .question{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:24px;margin:14px 0}
+    .sentence{font-size:31px;line-height:1.35;font-weight:900;letter-spacing:.2px}
+    .hint{font-size:14px;color:var(--muted);margin-top:10px}
+    .choices{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+    .choice{border:1px solid var(--line);background:#fff;color:var(--text);border-radius:17px;padding:16px;font-size:18px;font-weight:900;cursor:pointer;transition:.15s}
+    .choice:hover{border-color:var(--accent);background:var(--panel)}
+    .choice:disabled{opacity:1;cursor:default}
+    .choice.correct{border-color:var(--good);background:var(--mint);color:#0f5132}
+    .choice.wrong{border-color:var(--bad);background:var(--redbg);color:#8a1f24}
+    .choice.dim{opacity:.5}
+    .feedback{min-height:86px;border-radius:18px;margin-top:14px;padding:14px;border:1px solid var(--line);background:#fff;line-height:1.6}
+    .feedback.good{border-color:rgba(18,161,80,.55);background:var(--mint)}
+    .feedback.bad{border-color:rgba(229,72,77,.55);background:var(--redbg)}
+    .bar{height:12px;background:#fff;border-radius:999px;border:1px solid var(--line);overflow:hidden}
+    .bar > div{height:100%;width:0;background:linear-gradient(90deg,var(--accent),var(--accent2));transition:.25s}
+    .row{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:12px}
+    .btn{border:0;border-radius:16px;padding:12px 15px;background:var(--accent);color:#fff;font-weight:900;cursor:pointer}
+    .btn.secondary{background:#fff;color:var(--heading);border:1px solid var(--line)}
+    .btn:disabled{opacity:.5;cursor:not-allowed}
+    .rule{margin-top:14px;color:var(--muted);font-size:14px;line-height:1.7}
+    .rule b{color:var(--text)}
+    .skill{display:grid;gap:9px;margin-top:12px}
+    .skillItem{display:flex;justify-content:space-between;border-bottom:1px dashed var(--line);padding-bottom:7px;color:var(--muted);font-size:14px}
+    .tag{display:inline-block;padding:5px 9px;border-radius:999px;background:#fff;border:1px solid var(--line);color:var(--heading);font-size:12px;font-weight:800}
+    footer{margin-top:18px;color:var(--muted);font-size:13px;line-height:1.7}
+    
+@media(max-width:780px){
+  body{background:linear-gradient(180deg,var(--bg1),var(--bg2));}
+  .wrap{padding:18px 12px calc(92px + env(safe-area-inset-bottom));}
+  header{
+    display:grid;
+    grid-template-columns:1fr auto;
+    align-items:start;
+    gap:10px;
+    margin-bottom:12px;
+  }
+  h1{font-size:30px;line-height:1.15;margin-top:2px}
+  .sub{font-size:13px;line-height:1.45;max-width:250px}
+  .pill{
+    padding:8px 12px;
+    font-size:16px;
+    min-width:72px;
+    text-align:center;
+    position:sticky;
+    top:8px;
+    z-index:5;
+  }
+  .grid{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+  main.card{order:1}
+  aside.card{order:2}
+  .card{
+    border-radius:18px;
+    padding:14px;
+    box-shadow:0 8px 20px rgba(190,24,93,.08);
+  }
+  .row{gap:8px;margin-top:8px}
+  .row .btn{white-space:nowrap}
+  .stage{font-size:13px;margin-bottom:6px}
+  .tag{font-size:12px;padding:4px 8px}
+  .question{
+    padding:18px 14px;
+    margin:10px 0;
+    border-radius:16px;
+  }
+  .sentence{font-size:24px;line-height:1.4}
+  .hint{font-size:13px;line-height:1.45}
+  .choices{
+    grid-template-columns:1fr;
+    gap:9px;
+    margin-top:10px;
+  }
+  .choice{
+    font-size:18px;
+    padding:15px 14px;
+    border-radius:15px;
+  }
+  .feedback{
+    min-height:76px;
+    font-size:14px;
+    padding:12px;
+    border-radius:15px;
+  }
+  .btn{
+    padding:11px 13px;
+    border-radius:14px;
+    font-size:14px;
+  }
+  footer{display:none}
+
+  .map{
+    display:flex;
+    gap:10px;
+    overflow-x:auto;
+    padding:2px 2px 10px;
+    scroll-snap-type:x mandatory;
+    -webkit-overflow-scrolling:touch;
+  }
+  .map button{
+    min-width:220px;
+    margin:0;
+    scroll-snap-align:start;
+    padding:11px 12px;
+    border-radius:15px;
+  }
+  .level-title{font-size:14px}
+  .level-note{font-size:12px}
+  .rule{
+    font-size:13px;
+    line-height:1.6;
+    margin-top:8px;
+  }
+  .skill{display:none}
+}
+
+@media(max-width:420px){
+  .wrap{padding-left:10px;padding-right:10px}
+  h1{font-size:28px}
+  .sub{font-size:12.5px;max-width:235px}
+  .sentence{font-size:22px}
+  .choice{font-size:17px}
+  .map button{min-width:205px}
+}
+
+@supports(padding:max(0px)){
+  .wrap{padding-bottom:max(56px, env(safe-area-inset-bottom));}
+  @media(max-width:780px){
+    .wrap{padding-bottom:max(92px, env(safe-area-inset-bottom));}
+  }
+}
+
+  </style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div>
+      <h1>大長腿來闖關</h1>
+      <div class="sub">每個關卡都有一大包題庫，每次只抽 5 題。重置進度會重新隨機抽題。</div>
+    </div>
+    <div class="pill">⭐ <span id="score">0</span> / <span id="total">0</span></div>
+  </header>
+
+  <div class="grid">
+    <aside class="card">
+      <div class="stage">粉紅闖關地圖</div>
+      <div class="map" id="levelMap"></div>
+      <div class="rule">
+        <b>解題順序：</b><br>
+        ① 先找有沒有一般動詞<br>
+        ② 再找是不是 be 動詞<br>
+        ③ 有一般動詞才判斷 do / does<br>
+        ④ 最後進入 vt / vi
+      </div>
+      <div class="skill" id="skillBox"></div>
+    </aside>
+
+    <main class="card">
+      <div class="row">
+        <div>
+          <div class="stage" id="stageName"></div>
+          <div class="tag" id="progressText"></div>
+        </div>
+        <button class="btn secondary" onclick="resetGame()">重置進度＋重新抽題</button>
+      </div>
+      <div class="bar"><div id="bar"></div></div>
+
+      <section class="question">
+        <div class="sentence" id="sentence"></div>
+        <div class="hint" id="hint"></div>
+      </section>
+
+      <div class="choices" id="choices"></div>
+      <div id="feedback" class="feedback">請選一個答案。</div>
+
+      <div class="row">
+        <button class="btn secondary" onclick="prevQuestion()">上一題</button>
+        <button class="btn" id="nextBtn" onclick="nextQuestion()" disabled>下一題</button>
+      </div>
+
+      <footer>
+        V3 版：修正了會教錯的第三人稱句子、來回切題重複計分，並把 vt/vi 與 Boss 換成真正有變化的題目、抽題不重複。
+      </footer>
+    </main>
+  </div>
+</div>
+
+<script>
+/* ---------- 工具函式 ---------- */
+function pick(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+function shuffle(arr){ return [...arr].sort(()=>Math.random()-.5); }
+/* 依內容去重抽 n 題，避免同一次抽到重複句子 */
+function sampleUnique(arr, n, key=(x)=>x.s){
+  const seen = new Set(), out = [];
+  for(const item of shuffle(arr)){
+    const k = key(item);
+    if(!seen.has(k)){ seen.add(k); out.push(item); }
+    if(out.length >= n) break;
+  }
+  return out;
+}
+
+/* ---------- 語料（動詞含原形/三單，確保文法正確） ---------- */
+const verbData = [
+  {b:'play',  t:'plays',  o:'baseball'},
+  {b:'like',  t:'likes',  o:'ice cream'},
+  {b:'eat',   t:'eats',   o:'lunch'},
+  {b:'drink', t:'drinks', o:'water'},
+  {b:'watch', t:'watches',o:'TV'},
+  {b:'speak', t:'speaks', o:'English'},
+  {b:'study', t:'studies',o:'math'},
+  {b:'want',  t:'wants',  o:'dinner'},
+  {b:'need',  t:'needs',  o:'help'},
+  {b:'wash',  t:'washes', o:'the dishes'},
+  {b:'read',  t:'reads',  o:'a book'},
+  {b:'clean', t:'cleans', o:'the room'},
+  {b:'open',  t:'opens',  o:'the window'},
+  {b:'love',  t:'loves',  o:'music'}
+];
+
+/* 句首（首字大寫）主詞 */
+const plStart = ['I','You','We','They','The children','My friends','The students','The dogs','Ben and Tina','My grandparents'];
+const sgStart = ['He','She','Tom','Lily','My brother','My sister','My mom','My dad','The dog','Sandy'];
+/* 句中（Do/Does 之後）主詞 */
+const plMid = ['I','you','we','they','the children','my friends','the students','the dogs','Ben and Tina','my grandparents'];
+const sgMid = ['he','she','Tom','Lily','my brother','my sister','my mom','my dad','the dog','Sandy'];
+
+const beSing = ['happy','a student','at home','tired','ready','a singer','from Taiwan','very excited','sad','hungry','busy','a teacher'];
+const bePlural = ['happy','students','at school','tired','ready','from Taiwan','very excited','good friends','hungry','busy'];
+
+/* ---------- 各關題庫 ---------- */
+
+/* Lv1：判斷有沒有一般動詞（所有句子都文法正確） */
+function makeFindVerbBank(){
+  const bank = [];
+  // 有一般動詞：非三單主詞用原形
+  for(let i=0;i<40;i++){
+    const s = pick(plStart), v = pick(verbData);
+    bank.push({s:`${s} ${v.b} ${v.o}.`, h:'先找句子裡有沒有 eat / play / like / watch 這類動作。', choices:['有一般動詞','沒有一般動詞'], a:'有一般動詞', why:'這句有一般動詞（表示動作），所以不是 be 動詞系統。'});
+  }
+  // 有一般動詞：三單主詞用三單形（正確加 s/es/ies）
+  for(let i=0;i<40;i++){
+    const s = pick(sgStart), v = pick(verbData);
+    bank.push({s:`${s} ${v.t} ${v.o}.`, h:'先找句子裡有沒有動作動詞。', choices:['有一般動詞','沒有一般動詞'], a:'有一般動詞', why:'這句有一般動詞（三單加了 s/es/ies），所以不是 be 動詞系統。'});
+  }
+  // 沒有一般動詞：be 動詞句
+  const beRows = [
+    ['I','am',beSing],['You','are',bePlural],['We','are',bePlural],['They','are',bePlural],
+    ['He','is',beSing],['She','is',beSing],['Tom','is',beSing],['Lily','is',beSing],
+    ['The children','are',bePlural],['My brother','is',beSing]
+  ];
+  for(let i=0;i<60;i++){
+    const [s,be,comp] = pick(beRows);
+    bank.push({s:`${s} ${be} ${pick(comp)}.`, h:'am / is / are 是 be 動詞，不是一般動詞。', choices:['有一般動詞','沒有一般動詞'], a:'沒有一般動詞', why:'這句主要動詞是 am / is / are，屬於 be 動詞。'});
+  }
+  return bank;
+}
+
+/* Lv2：be 動詞 am / is / are */
+function makeBeBank(){
+  const bank = [];
+  for(let i=0;i<40;i++) bank.push({s:`I ___ ${pick(beSing)}.`, h:'主詞是 I。', choices:['am','is','are','do'], a:'am', why:'I 搭配 am。'});
+  for(let i=0;i<40;i++) bank.push({s:`${pick(['He','She','Tom','Lily','My brother','My sister'])} ___ ${pick(beSing)}.`, h:'主詞是單數。', choices:['am','is','are','does'], a:'is', why:'單數主詞 He / She / Tom / Lily 搭配 is。'});
+  for(let i=0;i<40;i++) bank.push({s:`${pick(['You','We','They','The children','My friends'])} ___ ${pick(bePlural)}.`, h:'主詞是 you 或複數。', choices:['am','is','are','do'], a:'are', why:'You / We / They / 複數主詞搭配 are。'});
+  return bank;
+}
+
+/* Lv3：do / does 問句開頭 */
+function makeDoDoesBank(){
+  const bank = [];
+  for(let i=0;i<60;i++){
+    const s = pick(plMid), v = pick(verbData);
+    bank.push({s:`___ ${s} ${v.b} ${v.o}?`, h:'主詞不是第三人稱單數。', choices:['Do','Does','Is','Are'], a:'Do', why:'I / You / We / They / 複數，用 Do。'});
+  }
+  for(let i=0;i<60;i++){
+    const s = pick(sgMid), v = pick(verbData);
+    bank.push({s:`___ ${s} ${v.b} ${v.o}?`, h:'主詞是第三人稱單數。', choices:['Do','Does','Is','Are'], a:'Does', why:'He / She / It / 單數人名，用 Does。'});
+  }
+  return bank;
+}
+
+/* Lv4：Does 幫忙時動詞回原形；三單肯定句才加 s */
+function makeBaseVerbBank(){
+  const bank = [];
+  for(let i=0;i<60;i++){
+    const s = pick(sgMid), v = pick(verbData);
+    bank.push({s:`Does ${s} ___ ${v.o}?`, h:'Does 後面動詞要回原形。', choices:[v.b, v.t], a:v.b, why:'Does 已經負責第三人稱單數，所以後面動詞用原形。'});
+  }
+  for(let i=0;i<60;i++){
+    const s = pick(sgStart), v = pick(verbData);
+    bank.push({s:`${s} ___ ${v.o}.`, h:'肯定句沒有 Does 幫忙，三單動詞要加 s/es/ies。', choices:[v.b, v.t], a:v.t, why:'第三人稱單數肯定句，動詞要變成三單形式。'});
+  }
+  return bank;
+}
+
+/* Lv5：vt 及物 / vi 不及物（16 + 16 種不同句子） */
+function makeVtViBank(){
+  const vt = [
+    ['I need my coat.','need 後面直接接 my coat。','need 可直接接受詞，所以是 vt。'],
+    ['Dogs love bones.','love 後面直接接 bones。','love 可直接接受詞，所以是 vt。'],
+    ['Can we discuss it later?','discuss 後面直接接 it。','discuss 可直接接受詞，所以是 vt。'],
+    ['She opened the door.','opened 後面直接接 the door。','open 在這句直接接受詞，所以是 vt。'],
+    ['He stopped the car.','stopped 後面直接接 the car。','stop 在這句直接接受詞，所以是 vt。'],
+    ['I grow tomatoes.','grow 後面直接接 tomatoes。','grow 在這句是種植，直接接受詞，所以是 vt。'],
+    ['They watched a movie.','watched 後面直接接 a movie。','watch 直接接受詞，所以是 vt。'],
+    ['We enjoy music.','enjoy 後面直接接 music。','enjoy 直接接受詞，所以是 vt。'],
+    ['She bought a gift.','bought 後面直接接 a gift。','buy 直接接受詞，所以是 vt。'],
+    ['He kicked the ball.','kicked 後面直接接 the ball。','kick 直接接受詞，所以是 vt。'],
+    ['I read comic books.','read 後面直接接 comic books。','read 直接接受詞，所以是 vt。'],
+    ['They cleaned the room.','cleaned 後面直接接 the room。','clean 直接接受詞，所以是 vt。'],
+    ['She answered the question.','answered 後面直接接 the question。','answer 直接接受詞，所以是 vt。'],
+    ['We visited grandma.','visited 後面直接接 grandma。','visit 直接接受詞，所以是 vt。'],
+    ['He closed the window.','closed 後面直接接 the window。','close 直接接受詞，所以是 vt。'],
+    ['I finished my homework.','finished 後面直接接 my homework。','finish 直接接受詞，所以是 vt。']
+  ];
+  const vi = [
+    ['I swim once a week.','swim 後面沒有直接接名詞。','swim 在這句沒有受詞，所以是 vi。'],
+    ['The door opened.','opened 後面沒有受詞。','門自己開了，open 在這句是不及物。'],
+    ['The car stopped.','stopped 後面沒有受詞。','車停了，stop 在這句是不及物。'],
+    ['He left suddenly.','left 後面接 suddenly，這是副詞。','suddenly 不是受詞，所以 leave 在這句是 vi。'],
+    ['The bird flew away.','flew 後面接 away，這是副詞。','away 不是受詞，所以 fly 在這句是 vi。'],
+    ['I will arrive at school.','arrive 後面要加 at。','arrive 不直接接地點，要加介系詞，所以是 vi。'],
+    ['Children grow quickly.','grow 後面接 quickly，這是副詞。','quickly 不是受詞，所以 grow 在這句是 vi。'],
+    ['The baby sleeps well.','sleeps 後面接 well，這是副詞。','well 不是受詞，所以 sleep 是 vi。'],
+    ['We laughed loudly.','laughed 後面接 loudly，這是副詞。','loudly 不是受詞，所以 laugh 是 vi。'],
+    ['The sun rises early.','rises 後面接 early，這是副詞。','early 不是受詞，所以 rise 是 vi。'],
+    ['They walked to school.','walked 後面用 to 接地點。','walk 用介系詞接地點，所以是 vi。'],
+    ['My dog barks at night.','barks 後面用 at 接時間。','沒有直接受詞，所以 bark 是 vi。'],
+    ['She smiled at me.','smiled 後面用 at。','smile 用介系詞，不直接接受詞，所以是 vi。'],
+    ['The plane landed safely.','landed 後面接 safely，這是副詞。','safely 不是受詞，所以 land 是 vi。'],
+    ['He sat on the chair.','sat 後面用 on 接位置。','sit 用介系詞，所以是 vi。'],
+    ['The rain fell all night.','fell 後面接時間，不是受詞。','fall 沒有受詞，所以是 vi。']
+  ];
+  const bank = [];
+  vt.forEach(x => bank.push({s:x[0], h:x[1], choices:['vt 及物','vi 不及物'], a:'vt 及物', why:x[2]}));
+  vi.forEach(x => bank.push({s:x[0], h:x[1], choices:['vt 及物','vi 不及物'], a:'vi 不及物', why:x[2]}));
+  return bank;
+}
+
+/* Lv6：綜合 Boss（20 種不同題目） */
+function makeBossBank(){
+  return [
+    {s:'My computer is new, but Sandy’s ___ .', h:'前面 is new，後面要否定。', choices:['isn’t','doesn’t','not','do'], a:'isn’t', why:'Sandy’s = Sandy is；前句用 is，所以否定用 isn’t。'},
+    {s:'Are the children playing outside? Yes, they ___ .', h:'Are 開頭就用 be 動詞回答。', choices:['do','are','play','playing'], a:'are', why:'be 動詞問句用 be 動詞簡答：Yes, they are.'},
+    {s:'Do you exercise every day? Yes, I ___ .', h:'Do 開頭就用 do 回答。', choices:['do','am','exercise','does'], a:'do', why:'Do you...? 的肯定簡答是 Yes, I do.'},
+    {s:'Does she like pizza? Yes, she ___ .', h:'Does 開頭就用 does 回答。', choices:['like','likes','is','does'], a:'does', why:'Does she...? 的肯定簡答是 Yes, she does.'},
+    {s:'Where ___ she from?', h:'from 前面用 be 動詞。', choices:['do','does','is','are'], a:'is', why:'Where is she from? 這是 be 動詞句。'},
+    {s:'Where ___ she come from?', h:'come 是一般動詞。', choices:['do','does','is','are'], a:'does', why:'she + 一般動詞問句，用 does。'},
+    {s:'___ your parents at home now?', h:'parents 是複數，句中沒有一般動詞。', choices:['Is','Are','Do','Does'], a:'Are', why:'複數主詞 + be 動詞問句，用 Are。'},
+    {s:'___ Tom have a bike?', h:'have 是一般動詞，Tom 是三單。', choices:['Do','Does','Is','Are'], a:'Does', why:'三單 + 一般動詞問句，用 Does。'},
+    {s:'She doesn’t ___ coffee.', h:'doesn’t 後面動詞回原形。', choices:['like','likes','liking','liked'], a:'like', why:'doesn’t 已表三單，後面動詞用原形。'},
+    {s:'They ___ not ready yet.', h:'主詞複數，句中沒有一般動詞。', choices:['are','is','do','does'], a:'are', why:'複數 + be 動詞，否定用 are not。'},
+    {s:'My sister ___ to school by bus.', h:'go 是一般動詞，主詞三單。', choices:['go','goes','is','are'], a:'goes', why:'三單肯定句，go 要變 goes。'},
+    {s:'I ___ my keys every morning.', h:'主詞 I，一般動詞肯定句。', choices:['lose','loses','am','do'], a:'lose', why:'主詞 I，一般動詞用原形。'},
+    {s:'He ___ the door slowly.', h:'the door 是受詞，主詞三單。', choices:['opens','open','is opening','do'], a:'opens', why:'三單肯定句 + 受詞，動詞用 opens。'},
+    {s:'___ it rain a lot here?', h:'rain 當一般動詞，主詞 it。', choices:['Do','Does','Is','Are'], a:'Does', why:'it 是三單，一般動詞問句用 Does。'},
+    {s:'We ___ happy today.', h:'句中沒有一般動詞。', choices:['are','do','have','does'], a:'are', why:'複數 + 形容詞，用 be 動詞 are。'},
+    {s:'Does he ___ English well?', h:'Does 後面動詞回原形。', choices:['speak','speaks','spoke','speaking'], a:'speak', why:'Does 後面用原形 speak。'},
+    {s:'Is your mom a nurse? No, she ___ .', h:'Is 開頭就用 be 動詞回答。', choices:['isn’t','doesn’t','don’t','not'], a:'isn’t', why:'be 動詞問句否定簡答：No, she isn’t.'},
+    {s:'Do they walk to school? No, they ___ .', h:'Do 開頭就用 do 回答。', choices:['don’t','aren’t','doesn’t','isn’t'], a:'don’t', why:'Do 問句否定簡答：No, they don’t.'},
+    {s:'The students ___ their homework now.', h:'複數主詞，一般動詞（做作業）。', choices:['do','does','is','are'], a:'do', why:'複數主詞，實義動詞 do（做）用原形。'},
+    {s:'She ___ a beautiful song.', h:'sing 是一般動詞，主詞三單。', choices:['sings','sing','is sing','does'], a:'sings', why:'三單肯定句，sing 要加 s。'}
+  ];
+}
+
+/* ---------- 關卡定義 ---------- */
+const levelDefs = [
+  {id:'findVerb', name:'Lv1 動詞雷達', note:'先判斷有沒有一般動詞。', skill:'找一般動詞', bank:makeFindVerbBank()},
+  {id:'beVerb',   name:'Lv2 be 動詞神殿', note:'沒有一般動詞時，判斷 am / is / are。', skill:'be 動詞', bank:makeBeBank()},
+  {id:'doDoes',   name:'Lv3 do / does 城堡', note:'有一般動詞時，用主詞決定 do 或 does。', skill:'do / does', bank:makeDoDoesBank()},
+  {id:'baseVerb', name:'Lv4 Does 後面回原形', note:'Does 已經幫忙，後面動詞不能加 s。', skill:'動詞原形', bank:makeBaseVerbBank()},
+  {id:'vtVi',     name:'Lv5 vt / vi 火山', note:'看動詞後面有沒有直接接名詞。', skill:'及物/不及物', bank:makeVtViBank()},
+  {id:'boss',     name:'Lv6 綜合 Boss', note:'混合 be / do / does / vt.vi。', skill:'綜合判斷', bank:makeBossBank()}
+];
+
+/* 每個關卡實際不同題目數（用來顯示題庫大小） */
+function uniqueCount(bank){ return new Set(bank.map(x=>x.s)).size; }
+
+/* ---------- 存檔 / 讀檔（v3 keys，避免和舊版衝突） ---------- */
+const K_SESSION='pink_session_v3', K_LEVEL='pink_level_v3', K_Q='pink_q_v3';
+
+function createSession(){
+  return levelDefs.map(lv => ({
+    ...lv,
+    questions: sampleUnique(lv.bank, 5).map(q => ({...q, picked:null}))
+  }));
+}
+
+let session = JSON.parse(localStorage.getItem(K_SESSION) || 'null');
+if(!session || !session.length || !session[0].questions){
+  session = createSession();
+  localStorage.setItem(K_SESSION, JSON.stringify(session));
+}
+let levelIndex = Number(localStorage.getItem(K_LEVEL) || 0);
+let qIndex = Number(localStorage.getItem(K_Q) || 0);
+
+/* 分數由作答紀錄計算，切題來回不會重複計分 */
+function recompute(){
+  let correct=0, total=0;
+  session.forEach(lv => lv.questions.forEach(q => {
+    if(q.picked != null){ total++; if(q.picked === q.a) correct++; }
+  }));
+  return {correct, total};
+}
+
+/* ---------- 畫面 ---------- */
+function renderMap(){
+  const box = document.getElementById('levelMap');
+  box.innerHTML = '';
+  session.forEach((lv, i)=>{
+    const btn = document.createElement('button');
+    btn.className = i===levelIndex ? 'active' : '';
+    btn.innerHTML = `<div class="level-title">${lv.name}</div><div class="level-note">${lv.note}｜本次抽 5 題 / 題庫 ${uniqueCount(lv.bank)} 題</div>`;
+    btn.onclick = ()=>{ levelIndex=i; qIndex=0; save(); render(); };
+    box.appendChild(btn);
+  });
+}
+function renderSkill(){
+  document.getElementById('skillBox').innerHTML = session.map((lv,i)=>{
+    const done = i < levelIndex ? '✅' : (i===levelIndex ? '🌸' : '⬜');
+    return `<div class="skillItem"><span>${done} ${lv.skill}</span><span>5題</span></div>`;
+  }).join('');
+}
+function render(){
+  const lv = session[levelIndex], q = lv.questions[qIndex];
+  const answered = q.picked != null;
+
+  document.getElementById('stageName').textContent = lv.name;
+  document.getElementById('progressText').textContent = `本次第 ${qIndex+1} / 5 題`;
+  document.getElementById('sentence').textContent = q.s;
+  document.getElementById('hint').textContent = q.h;
+  document.getElementById('bar').style.width = `${(qIndex/5)*100}%`;
+
+  const {correct,total} = recompute();
+  document.getElementById('score').textContent = correct;
+  document.getElementById('total').textContent = total;
+
+  // 選項
+  const choices = document.getElementById('choices');
+  choices.innerHTML = '';
+  shuffle(q.choices).forEach(c=>{
+    const b = document.createElement('button');
+    b.className = 'choice';
+    b.textContent = c;
+    if(answered){
+      b.disabled = true;
+      if(c === q.a) b.classList.add('correct');
+      else if(c === q.picked) b.classList.add('wrong');
+      else b.classList.add('dim');
+    } else {
+      b.onclick = ()=>answer(c);
+    }
+    choices.appendChild(b);
+  });
+
+  // 回饋
+  const fb = document.getElementById('feedback');
+  if(!answered){
+    fb.className = 'feedback';
+    fb.textContent = '請選一個答案。';
+    document.getElementById('nextBtn').disabled = true;
+  } else if(q.picked === q.a){
+    fb.className = 'feedback good';
+    fb.innerHTML = `✅ 答對！<br>${q.why}`;
+    document.getElementById('nextBtn').disabled = false;
+  } else {
+    fb.className = 'feedback bad';
+    fb.innerHTML = `❌ 這題答案是 <b>${q.a}</b>。<br>${q.why}`;
+    document.getElementById('nextBtn').disabled = false;
+  }
+
+  renderMap(); renderSkill();
+}
+function answer(c){
+  const q = session[levelIndex].questions[qIndex];
+  if(q.picked != null) return;   // 已作答就鎖住，不再計分
+  q.picked = c;
+  save();
+  render();
+}
+function nextQuestion(){
+  if(qIndex < 4){
+    qIndex++;
+  }else if(levelIndex < session.length-1){
+    levelIndex++; qIndex=0;
+  }else{
+    const {correct,total} = recompute();
+    document.getElementById('feedback').className='feedback good';
+    document.getElementById('feedback').innerHTML=`🎉 大長腿全部破關！這輪答對 ${correct} / ${total} 題。按「重置進度＋重新抽題」可以再抽另一組 5 題。`;
+    document.getElementById('bar').style.width='100%';
+    return;
+  }
+  save(); render();
+}
+function prevQuestion(){
+  if(qIndex > 0) qIndex--;
+  else if(levelIndex > 0){ levelIndex--; qIndex=4; }
+  save(); render();
+}
+function save(){
+  localStorage.setItem(K_SESSION, JSON.stringify(session));
+  localStorage.setItem(K_LEVEL, levelIndex);
+  localStorage.setItem(K_Q, qIndex);
+}
+function resetGame(){
+  session = createSession();
+  levelIndex=0; qIndex=0;
+  save();
+  render();
+}
+render();
+</script>
+</body>
+</html>
